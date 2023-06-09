@@ -5,19 +5,22 @@
 {% block content %}
   <h1>Play Game</h1>
 
-  <div class="game-board">
-    {% for row in game.board.state %}
-      <div class="board-row">
-        {% for cell in row %}
-          <div class="board-cell">
-            {% if cell == 'X' %}
-              <div class="disc black-disc"></div>
-            {% elif cell == 'O' %}
-              <div class="disc white-disc"></div>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-    {% endfor %}
-  </div>
+  <table class="game-board">
+    <tbody>
+      {% for row in game.board.state %}
+        <tr>
+          {% for cell in row %}
+            <td class="cell">
+              {% if cell == "X" %}
+                <div class="black-disc"></div>
+              {% elif cell == "O" %}
+                <div class="white-disc"></div>
+              {% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}
