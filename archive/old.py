@@ -28,6 +28,8 @@ class Board:
         )
         
     def is_terminal(self):
+        "Has the game ended?"
+
         pass 
 
     def is_valid_move(self, row, col):
