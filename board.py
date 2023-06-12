@@ -15,4 +15,3 @@ class Board:
 
     def display(self):
         print(self.board)
-

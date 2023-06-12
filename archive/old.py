@@ -73,6 +73,7 @@ class Board:
                 if self.board[current_row, current_col] == self.opposing_disc:
                     found_opposing_disc = True
 
+                # Else traverse one more step in same direction
                 current_row += d_row
                 current_col += d_col
 
@@ -86,12 +87,10 @@ class Board:
         Returns:
             List[tuple[int, int]]: A list of tuples containing all valid moves.
         """
+
         # Iteratively find all valid moves on the board
-        valid_moves = [
-            (row, col)
-            for row in range(8)
-            for col in range(8)
-            if self.is_valid_move(row, col)
-        ]
+        valid_moves = [(row, col) for row in range(8) 
+                       for col in range(8) 
+                       if self.is_valid_move(row, col)]
         
         return valid_moves
