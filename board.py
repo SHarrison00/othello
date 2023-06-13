@@ -1,5 +1,12 @@
 
 import numpy as np
+from enum import Enum
+
+class SquareType(Enum):
+    EMPTY = ' '
+    BLACK = 'X'
+    WHITE = 'O'
+    VALID = '*'
 
 class Board:
     """
@@ -7,11 +14,20 @@ class Board:
     """
 
     def __init__(self):
-        self.state = np.full((8, 8), ' ')
-        self.state[3, 3] = 'O'
-        self.state[3, 4] = 'X'
-        self.state[4, 3] = 'X'
-        self.state[4, 4] = 'O'
+        self.state = np.full((8, 8), SquareType.EMPTY)
+        self.state[3, 3] = SquareType.WHITE
+        self.state[3, 4] = SquareType.BLACK
+        self.state[4, 3] = SquareType.BLACK
+        self.state[4, 4] = SquareType.WHITE
+        # add valid moves
 
     def display(self):
-        print(self.board)
+        board_repr = np.where(self.state == SquareType.BLACK, ' X',
+                    np.where(self.state == SquareType.WHITE, ' O',
+                    np.where(self.state == SquareType.VALID, ' #', '  ')))
+
+        print('+' + '---' * len(board_repr[0]) + '+')
+        for row in board_repr:
+            row_str = '|'.join(row)
+            print('| ' + row_str + ' |')
+            print('+' + '---' * len(board_repr[0]) + '+')

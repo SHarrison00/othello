@@ -1,5 +1,6 @@
 
 from board import Board
+from board import SquareType
 from player import Player
 
 class Game:
@@ -12,8 +13,8 @@ class Game:
         self.is_finished = False
 
         # Player instances are inputs 
-        self.player_black = Player(player_black, 'X')
-        self.player_white = Player(player_white, 'O')
+        self.player_black = Player(player_black, SquareType.BLACK)
+        self.player_white = Player(player_white, SquareType.WHITE)
 
         # Black always starts
         self.active = self.player_black
@@ -36,7 +37,7 @@ class Game:
         """
 
         # Move is invalid if the cell is not empty 
-        if self.board.state[row, col] != ' ':
+        if self.board.state[row, col] != SquareType.EMPTY:
             return False
 
         # Traversable directions; up, down, left, right and all diagonals
@@ -51,7 +52,7 @@ class Game:
             
             # While within boundaries
             while 0 <= r < 8 and 0 <= c < 8:
-                if self.board.state[r, c] == ' ':
+                if self.board.state[r, c] == SquareType.EMPTY:
                     break
 
                 if self.board.state[r, c] == self.active.disc_color:
@@ -80,13 +81,15 @@ class Game:
             list: A list of tuples representing the valid moves (row, col).
         """
 
-
         return [
             (row, col)
             for row in range(8)
             for col in range(8)
             if self.is_valid_move(row, col)
         ]
+    
+    def update_valid_moves(self):
+        pass
 
     def is_game_finished(self):
         pass
