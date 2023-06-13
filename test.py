@@ -35,11 +35,8 @@ class TestGame(unittest.TestCase):
         game = Game("Sam", "Alistair")
         valid_moves = game.get_valid_moves()
         EXPECTED_VALID_MOVES = [(2, 3), (3, 2), (4, 5), (5, 4)]
-
-        print(valid_moves)
-
         self.assertEqual(set(valid_moves), set(EXPECTED_VALID_MOVES))
 
 
 if __name__ == '__main__':
-    unittest.main(verbosity=0)
+    unittest.main(verbosity=2)

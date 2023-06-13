@@ -25,7 +25,7 @@ class Game:
     def is_valid_move(self, row, col):
         """
         Checks the validity of a move. Involves traversing in different 
-        DIRECTIONS on the board, and checking the traversed sequence of discs.
+        directions on the board, and checking the traversed sequence of discs.
 
         Args:
             row (int): The row coordinate of the move.
@@ -40,34 +40,34 @@ class Game:
             return False
 
         # Traversable directions; up, down, left, right and all diagonals
-        DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1),
+        DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), 
                       (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
         # Traverse board in specified direction
         for direction in DIRECTIONS:
             d_row, d_col = direction
-            row, col = row + d_row, col + d_col
+            r, c = row + d_row, col + d_col
             found_opposing_disc = False
             
             # While within boundaries
-            while 0 <= row < 8 and 0 <= col < 8:
-                if self.board.state[row, col] == ' ':
+            while 0 <= r < 8 and 0 <= c < 8:
+                if self.board.state[r, c] == ' ':
                     break
 
-                if self.board.state[row, col] == self.active.disc_color:
+                if self.board.state[r, c] == self.active.disc_color:
                     if found_opposing_disc:
                         # Sequence of opponent's (inactive) discs starting/
                         # ending with player's (active) own discs
                         return True
                     break
 
-                if self.board.state[row, col] == self.inactive.disc_color:
+                if self.board.state[r, c] == self.inactive.disc_color:
                     # Next disc in traversed sequence is found to be opponents
                     found_opposing_disc = True
 
                 # Else traverse one more step
-                row += d_row
-                col += d_col
+                r += d_row
+                c += d_col
 
         # No directions yield valid sequence, hence invalid
         return False
@@ -80,6 +80,7 @@ class Game:
             list: A list of tuples representing the valid moves (row, col).
         """
 
+
         return [
             (row, col)
             for row in range(8)
@@ -89,5 +90,3 @@ class Game:
 
     def is_game_finished(self):
         pass
-
-    
