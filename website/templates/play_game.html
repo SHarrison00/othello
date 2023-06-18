@@ -11,10 +11,12 @@
         <tr>
           {% for cell in row %}
             <td class="cell">
-              {% if cell == "X" %}
+              {% if cell.name == "BLACK" %}
                 <div class="black-disc"></div>
-              {% elif cell == "O" %}
+              {% elif cell.name == "WHITE" %}
                 <div class="white-disc"></div>
+              {% elif cell.name == "VALID" %}
+                <div class="grey-disc"></div>
               {% endif %}
             </td>
           {% endfor %}

@@ -34,3 +34,11 @@ h1 {
   background-color: white;
   border-radius: 50%;
 }
+
+.grey-disc {
+  width: 100%;
+  height: 100%;
+  opacity: 67%;
+  background-color: gray;
+  border-radius: 50%;
+}

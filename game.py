@@ -20,8 +20,10 @@ class Game:
         self.active = self.player_black
         self.inactive = self.player_white
 
+
     def change_turn(self):
         self.active, self.inactive = self.inactive, self.active
+
 
     def is_valid_move(self, row, col):
         """
@@ -73,6 +75,7 @@ class Game:
         # No directions yield valid sequence, hence invalid
         return False
 
+
     def get_valid_moves(self):
         """
         Get all valid moves for the current active player in the game.
@@ -88,8 +91,39 @@ class Game:
             if self.is_valid_move(row, col)
         ]
     
-    def update_valid_moves(self):
-        pass
+
+    def reset_valid_moves(self):
+        """
+        Reset all valid moves on the board to empty. 
+        """
+
+        for row in self.board.state:
+            for cell in row: 
+                if cell.name == "VALID":
+                    cell = SquareType.EMPTY
+
+                    # maybe its not replacing properply...
+
+                    # this function fails
+
+                    # this functions will help fix other failing function 
+
+
+    def update_valid_moves(self, valid_moves):
+        """
+        Updates the valid moves on the game board. 
+        """
+
+        if len(valid_moves) == 0:
+            pass
+        
+        else: 
+            for move in valid_moves:
+                self.board.state[move[0], move[1]] = SquareType.VALID
+            
+        
+
+
 
     def is_game_finished(self):
         pass

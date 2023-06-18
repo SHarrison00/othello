@@ -29,6 +29,22 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.inactive, game.player_black)
 
 
+    def test_reset_valid_moves(self):
+        game = Game("Sam", "Alistair")
+        game.reset_valid_moves()
+
+        EXPECTED_BOARD_STATE = np.full((8, 8), SquareType.EMPTY)
+        EXPECTED_BOARD_STATE[3, 3] = SquareType.WHITE
+        EXPECTED_BOARD_STATE[3, 4] = SquareType.BLACK
+        EXPECTED_BOARD_STATE[4, 3] = SquareType.BLACK
+        EXPECTED_BOARD_STATE[4, 4] = SquareType.WHITE
+
+        game.board.display()
+
+        # After reseting valid moves, we should expect the board state above
+        assert np.array_equal(game.board.state, EXPECTED_BOARD_STATE) 
+
+
     def test_valid_moves_initial_board(self):
         """
         Test for valid moves on the initial board configuration. Assumes 
@@ -47,6 +63,7 @@ class TestGame(unittest.TestCase):
         Test for valid moves on a board configuration that is nearly full. 
         Assumes implicitly the player is black, and the opponent is white.
         """
+
         game = Game("Sam", "Alistair")
         valid_moves = game.get_valid_moves()
 
@@ -68,6 +85,33 @@ class TestGame(unittest.TestCase):
 
         EXPECTED_VALID_MOVES = [(7, 7)]
         self.assertEqual(set(valid_moves), set(EXPECTED_VALID_MOVES))
+
+    
+    def test_update_valid_moves(self):
+        """
+        Test that the update valid modes function correctly updates the board
+        state when called. 
+        """
+
+        game = Game("Sam", "Alistair")
+
+        # Initialise nearly full board configuration, with two empty spaces
+        NEARLY_FULL_BOARD = [
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.WHITE] * 8,
+            [SquareType.WHITE] * 8,
+            [SquareType.WHITE] * 8,
+            [SquareType.WHITE] * 7 + [SquareType.EMPTY],
+        ]
+
+        game.board.state = np.array(NEARLY_FULL_BOARD)
+
+        VALID_MOVES = [(7, 7)]
+        game.update_valid_moves(VALID_MOVES)
+        self.assertEqual(game.board.state[7,7], SquareType.VALID)
 
 
 if __name__ == '__main__':

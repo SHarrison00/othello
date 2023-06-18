@@ -6,7 +6,7 @@ class SquareType(Enum):
     EMPTY = ' '
     BLACK = 'X'
     WHITE = 'O'
-    VALID = '*'
+    VALID = '#'
 
 class Board:
     """
@@ -19,15 +19,24 @@ class Board:
         self.state[3, 4] = SquareType.BLACK
         self.state[4, 3] = SquareType.BLACK
         self.state[4, 4] = SquareType.WHITE
-        # add valid moves
+
+        self.state[2, 3] = SquareType.VALID
+        self.state[3, 2] = SquareType.VALID
+        self.state[4, 5] = SquareType.VALID
+        self.state[5, 4] = SquareType.VALID
+
 
     def display(self):
-        board_repr = np.where(self.state == SquareType.BLACK, ' X',
-                    np.where(self.state == SquareType.WHITE, ' O',
-                    np.where(self.state == SquareType.VALID, ' #', '  ')))
+        """
+        Simple function to display the board state. 
+        """
+               
+        board_repr = np.where(self.state == SquareType.BLACK, ' X ',
+                    np.where(self.state == SquareType.WHITE, ' O ',
+                    np.where(self.state == SquareType.VALID, ' # ', '   ')))
 
-        print('+' + '---' * len(board_repr[0]) + '+')
+        print('+' + '-' * 33 + '+')
         for row in board_repr:
             row_str = '|'.join(row)
             print('| ' + row_str + ' |')
-            print('+' + '---' * len(board_repr[0]) + '+')
+            print('+' + '-' * 33 + '+')
