@@ -30,10 +30,11 @@ class Board:
         """
         Simple function to display the board state. 
         """
-               
-        board_repr = np.where(self.state == SquareType.BLACK, ' X ',
-                    np.where(self.state == SquareType.WHITE, ' O ',
-                    np.where(self.state == SquareType.VALID, ' # ', '   ')))
+
+        board_repr = np.array([
+            [" " + square.value + " " for square in row]
+            for row in self.state
+        ])
 
         print('+' + '-' * 33 + '+')
         for row in board_repr:

@@ -97,6 +97,8 @@ class Game:
         Reset all valid moves on the board to empty. 
         """
 
+        pass
+
         for row in self.board.state:
             for cell in row: 
                 if cell.name == "VALID":
