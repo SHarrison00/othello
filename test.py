@@ -39,8 +39,6 @@ class TestGame(unittest.TestCase):
         EXPECTED_BOARD_STATE[4, 3] = SquareType.BLACK
         EXPECTED_BOARD_STATE[4, 4] = SquareType.WHITE
 
-        game.board.display()
-
         # After reseting valid moves, we should expect the board state above
         assert np.array_equal(game.board.state, EXPECTED_BOARD_STATE) 
 
@@ -52,6 +50,12 @@ class TestGame(unittest.TestCase):
         """
 
         game = Game("Sam", "Alistair")
+
+        # First, we reset the valid moves that are defined when the board is
+        # instantiated at the start
+        game.reset_valid_moves()
+
+        # Then, we can test the functionality of get_valid_moves()
         valid_moves = game.get_valid_moves()
         
         EXPECTED_VALID_MOVES = [(2, 3), (3, 2), (4, 5), (5, 4)]

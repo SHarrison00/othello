@@ -94,21 +94,13 @@ class Game:
 
     def reset_valid_moves(self):
         """
-        Reset all valid moves on the board to empty. 
+        Reset all valid moves on the board to empty.
         """
-
-        pass
-
-        for row in self.board.state:
-            for cell in row: 
-                if cell.name == "VALID":
-                    cell = SquareType.EMPTY
-
-                    # maybe its not replacing properply...
-
-                    # this function fails
-
-                    # this functions will help fix other failing function 
+        
+        for row in range(8):
+            for col in range(8):
+                if self.board.state[row, col] == SquareType.VALID:
+                    self.board.state[row, col] = SquareType.EMPTY
 
 
     def update_valid_moves(self, valid_moves):
