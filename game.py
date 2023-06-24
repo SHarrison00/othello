@@ -96,7 +96,7 @@ class Game:
         """
         Reset all valid moves on the board to empty.
         """
-        
+
         for row in range(8):
             for col in range(8):
                 if self.board.state[row, col] == SquareType.VALID:
@@ -108,16 +108,13 @@ class Game:
         Updates the valid moves on the game board. 
         """
 
-        if len(valid_moves) == 0:
-            pass
-        
-        else: 
-            for move in valid_moves:
-                self.board.state[move[0], move[1]] = SquareType.VALID
+        if not valid_moves:
+            return
+
+        for move in valid_moves:
+            row, col = move
+            self.board.state[row, col] = SquareType.VALID
             
-        
-
-
 
     def is_game_finished(self):
         pass

@@ -93,13 +93,12 @@ class TestGame(unittest.TestCase):
     
     def test_update_valid_moves(self):
         """
-        Test that the update valid modes function correctly updates the board
-        state when called. 
+        Test valid modes are updated to the board state as intended.
         """
 
         game = Game("Sam", "Alistair")
 
-        # Initialise nearly full board configuration, with two empty spaces
+        # Initialise nearly full board configuration, with one empty spaces
         NEARLY_FULL_BOARD = [
             [SquareType.BLACK] * 8,
             [SquareType.BLACK] * 8,
