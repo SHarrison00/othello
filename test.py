@@ -6,6 +6,7 @@ from game import Game
 from board import Board
 from board import SquareType
 from player import Player
+from player import PlayerType
 
 class TestGame(unittest.TestCase):
     """
@@ -13,7 +14,7 @@ class TestGame(unittest.TestCase):
     """
 
     def test_player_colors(self):
-        game = Game("Sam", "Alistair")
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
 
         # Check first player is black and the second is white
         self.assertEqual(game.player_black.disc_color, SquareType.BLACK)
@@ -21,7 +22,7 @@ class TestGame(unittest.TestCase):
 
 
     def test_change_turn(self):
-        game = Game("Sam", "Alistair")
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
         game.change_turn()
 
         # After changing turns, active player should be white
@@ -30,7 +31,7 @@ class TestGame(unittest.TestCase):
 
 
     def test_reset_valid_moves(self):
-        game = Game("Sam", "Alistair")
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
         game.reset_valid_moves()
 
         EXPECTED_BOARD_STATE = np.full((8, 8), SquareType.EMPTY)
@@ -49,7 +50,7 @@ class TestGame(unittest.TestCase):
         implicitly the player is black, and the opponent is white.
         """
 
-        game = Game("Sam", "Alistair")
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
 
         # First, we reset the valid moves that are defined when the board is
         # instantiated at the start
@@ -68,7 +69,7 @@ class TestGame(unittest.TestCase):
         Assumes implicitly the player is black, and the opponent is white.
         """
 
-        game = Game("Sam", "Alistair")
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
         valid_moves = game.get_valid_moves()
 
         # Initialise nearly full board configuration, with two empty spaces
@@ -96,7 +97,7 @@ class TestGame(unittest.TestCase):
         Test valid modes are updated to the board state as intended.
         """
 
-        game = Game("Sam", "Alistair")
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
 
         # Initialise nearly full board configuration, with one empty spaces
         NEARLY_FULL_BOARD = [
@@ -115,6 +116,10 @@ class TestGame(unittest.TestCase):
         VALID_MOVES = [(7, 7)]
         game.update_valid_moves(VALID_MOVES)
         self.assertEqual(game.board.state[7,7], SquareType.VALID)
+
+
+    def test_get_offline_user_move(self):
+        pass
 
 
 if __name__ == '__main__':

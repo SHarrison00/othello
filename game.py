@@ -1,20 +1,20 @@
 
 from board import Board
 from board import SquareType
-from player import Player
+from player import Player, PlayerType
 
 class Game:
     """
     Main orchestrator, managing overall game flow.    
     """
 
-    def __init__(self, player_black, player_white):
+    def __init__(self, player_type_black, player_type_white):
         self.board = Board()
         self.is_finished = False
 
         # Player instances are inputs 
-        self.player_black = Player(player_black, SquareType.BLACK)
-        self.player_white = Player(player_white, SquareType.WHITE)
+        self.player_black = Player(player_type_black, SquareType.BLACK)
+        self.player_white = Player(player_type_white, SquareType.WHITE)
 
         # Black always starts
         self.active = self.player_black
@@ -37,6 +37,10 @@ class Game:
         Returns:
             bool: True if the move is valid, False otherwise.
         """
+
+        # Before doing anything, reset any moves on the board that are still
+        # displayed as valid
+        self.reset_valid_moves()
 
         # Move is invalid if the cell is not empty 
         if self.board.state[row, col] != SquareType.EMPTY:
@@ -114,6 +118,19 @@ class Game:
         for move in valid_moves:
             row, col = move
             self.board.state[row, col] = SquareType.VALID
+
+    
+    def get_player_move(self):
+        """
+        Retrieve the player's move by identifying the type of player.
+        """
+
+        row, col = None, None
+
+        if self.active.player_type == PlayerType.OFFLINE:
+            row, col = self.active.get_offline_user_move(self)
+
+        return row, col
             
 
     def is_game_finished(self):

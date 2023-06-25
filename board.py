@@ -8,6 +8,7 @@ class SquareType(Enum):
     WHITE = 'O'
     VALID = '#'
 
+
 class Board:
     """
     Handles the game board, its state, and valid moves.
@@ -36,8 +37,9 @@ class Board:
             for row in self.state
         ])
 
-        print('+' + '-' * 33 + '+')
-        for row in board_repr:
+        print('     A   B   C   D   E   F   G   H  ')
+        print('  +' + '-' * 33 + '+')
+        for i, row in enumerate(board_repr, start=1):
             row_str = '|'.join(row)
-            print('| ' + row_str + ' |')
-            print('+' + '-' * 33 + '+')
+            print(f'{i} | {row_str} |')
+            print('  +' + '-' * 33 + '+')
