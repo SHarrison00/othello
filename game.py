@@ -131,6 +131,19 @@ class Game:
             row, col = self.active.get_offline_user_move(self)
 
         return row, col
+    
+
+    def make_move(self, row, col):
+        """
+        Make the move checking all eight directions for pieces that need to be 
+        flipped, i.e. update the game board to reflect the made move.
+        """
+
+        # check all eight directions
+
+        # flip necessary pieces
+                
+        pass
             
 
     def is_game_finished(self):
