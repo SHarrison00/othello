@@ -28,7 +28,7 @@ class Game:
     def is_valid_move(self, row, col):
         """
         Checks the validity of a move. Involves traversing in different 
-        directions on the board, and checking the traversed sequence of discs.
+        DIRECTIONS on the board, and checking the traversed sequence of discs.
 
         Args:
             row (int): The row coordinate of the move.
@@ -133,17 +133,54 @@ class Game:
         return row, col
     
 
-    def make_move(self, row, col):
+    def discs_to_be_flipped(self, row, col):
         """
-        Make the move checking all eight directions for pieces that need to be 
-        flipped, i.e. update the game board to reflect the made move.
+        For a given move, determine the discs that need to be flipped.
+        Returns a list of the discs to be flipped.
         """
 
-        # check all eight directions
+        # Initialize store discs to flip
+        discs_to_flip = []
 
-        # flip necessary pieces
-                
-        pass
+        # Traversable DIRECTIONS; up, down, left, right and all diagonals
+        DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), 
+                      (-1, -1), (-1, 1), (1, -1), (1, 1)]
+
+        # Traverse board in specified direction
+        for direction in DIRECTIONS:
+            d_row, d_col = direction
+            r, c = row + d_row, col + d_col
+
+            # Initialize to store discs in the current direction
+            current_discs = []
+
+            # Flag to indicate if there exists discs to be flipped
+            flip_flag = False
+
+            # Continue traversing in the current direction
+            while 0 <= r < 8 and 0 <= c < 8:
+                # Check the state of the current position on the board
+                if self.board.state[r, c] == self.inactive.disc_color:
+                    # Add the current position to the list of current discs
+                    current_discs.append((r, c))
+                    flip_flag = True
+                elif self.board.state[r, c] == self.active.disc_color:
+                    # If there exists discs to flip, append them to the list
+                    if flip_flag:
+                        discs_to_flip.extend(current_discs)
+                    break
+                else:
+                    # Empty position, no more discs to flip
+                    break
+
+                # Else traverse one more step
+                r += d_row
+                c += d_col
+
+        # Return the list of discs to be flipped
+        print(f"discs_to_flip: {discs_to_flip}")
+        return discs_to_flip
+
             
 
     def is_game_finished(self):
