@@ -4,12 +4,18 @@ from game import Game
 from board import Board
 from player import PlayerType
 
-game = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
+game = Game(PlayerType.OFFLINE, PlayerType.OFFLINE)
 
+# Get move, make move, change turns, get valid moves
 game.board.display()
+game.get_player_move()
+game.make_move()
+game.change_turn()
+game.update_valid_moves()
 
-# game.get_player_move()
-game.discs_to_be_flipped(0 , 0)
-game.discs_to_be_flipped(2 , 3)
-game.discs_to_be_flipped(4 , 5)
-game.discs_to_be_flipped(7 , 7)
+# Get move, make move, change turns, get valid moves
+game.board.display()
+game.get_player_move()
+game.make_move()
+game.change_turn()
+game.update_valid_moves()

@@ -20,6 +20,9 @@ class Game:
         self.active = self.player_black
         self.inactive = self.player_white
 
+        # Initialize next move to None
+        self.next_move = None
+
 
     def change_turn(self):
         self.active, self.inactive = self.inactive, self.active
@@ -107,14 +110,21 @@ class Game:
                     self.board.state[row, col] = SquareType.EMPTY
 
 
-    def update_valid_moves(self, valid_moves):
+    def update_valid_moves(self):
         """
         Updates the valid moves on the game board. 
         """
 
+        # Reset previous valid moves
+        self.reset_valid_moves()
+
+        # Get all valid moves for the current active player
+        valid_moves = self.get_valid_moves()
+
         if not valid_moves:
             return
-
+        
+        # Update
         for move in valid_moves:
             row, col = move
             self.board.state[row, col] = SquareType.VALID
@@ -125,18 +135,15 @@ class Game:
         Retrieve the player's move by identifying the type of player.
         """
 
-        row, col = None, None
-
         if self.active.player_type == PlayerType.OFFLINE:
             row, col = self.active.get_offline_user_move(self)
 
-        return row, col
-    
+        self.next_move = (row, col)
 
-    def discs_to_be_flipped(self, row, col):
+
+    def discs_to_flip(self, row, col):
         """
         For a given move, determine the discs that need to be flipped.
-        Returns a list of the discs to be flipped.
         """
 
         # Initialize store discs to flip
@@ -151,37 +158,58 @@ class Game:
             d_row, d_col = direction
             r, c = row + d_row, col + d_col
 
-            # Initialize to store discs in the current direction
-            current_discs = []
+            # Sequence of other player discs
+            seq_discs = []
 
-            # Flag to indicate if there exists discs to be flipped
+            # Flag to indicate if there exists discs to flip
             flip_flag = False
 
             # Continue traversing in the current direction
             while 0 <= r < 8 and 0 <= c < 8:
-                # Check the state of the current position on the board
                 if self.board.state[r, c] == self.inactive.disc_color:
-                    # Add the current position to the list of current discs
-                    current_discs.append((r, c))
+                    seq_discs.append((r, c))
                     flip_flag = True
+
                 elif self.board.state[r, c] == self.active.disc_color:
-                    # If there exists discs to flip, append them to the list
                     if flip_flag:
-                        discs_to_flip.extend(current_discs)
+                        discs_to_flip.extend(seq_discs)
                     break
                 else:
-                    # Empty position, no more discs to flip
                     break
 
-                # Else traverse one more step
+                # Traverse another step
                 r += d_row
                 c += d_col
 
-        # Return the list of discs to be flipped
-        print(f"discs_to_flip: {discs_to_flip}")
         return discs_to_flip
+    
 
-            
+    def flip(self):
+        """
+        For the next move flip the discs, updating the board.
+        """
+
+        # For next move, identify discs to flip
+        row, col = self.next_move[0], self.next_move[1]
+        discs = self.discs_to_flip(row, col)
+
+        # Update the board state
+        for disc in discs:
+            self.board.state[disc[0], disc[1]] = self.active.disc_color
+
+
+    def make_move(self):
+        """
+        Make the next move, flipping opponent's discs. 
+        """
+
+        # Place the disc for the next move
+        row, col = self.next_move[0], self.next_move[1]
+        self.board.state[row, col] = self.active.disc_color
+        
+        # Flip the opponent's discs
+        self.flip() 
+
 
     def is_game_finished(self):
         pass

@@ -117,6 +117,14 @@ class TestGame(unittest.TestCase):
         game.update_valid_moves(VALID_MOVES)
         self.assertEqual(game.board.state[7,7], SquareType.VALID)
 
+    
+    def test_disc_to_flip(self):
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
+        
+        # Two cases to test
+        self.assertEqual(game.discs_to_flip(0 , 0), [])
+        self.assertEqual(game.discs_to_flip(2 , 3), [(3, 3)])
+
 
     def test_get_offline_user_move(self):
         pass
