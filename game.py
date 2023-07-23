@@ -20,8 +20,9 @@ class Game:
         self.active = self.player_black
         self.inactive = self.player_white
 
-        # Initialize next move to None
+        # Move history
         self.next_move = None
+        self.prev_move = None
 
 
     def change_turn(self):
@@ -132,11 +133,22 @@ class Game:
     
     def get_player_move(self):
         """
-        Retrieve the player's move by identifying the type of player.
+        Retrieve player's move by identifying player type.
         """
 
         if self.active.player_type == PlayerType.OFFLINE:
             row, col = self.active.get_offline_user_move(self)
+
+        elif self.active.player_type == PlayerType.RANDOM:
+            if self.active.get_random_move(self) == None:
+
+                # Need to think about how to hanlde when no moves valid for a player.
+
+                # Do we just use get_valid_moves() as a check? ...
+
+                # This would prevent case-by-case None checking.... 
+                return
+            row, col = self.active.get_random_move(self)
 
         self.next_move = (row, col)
 
@@ -203,13 +215,36 @@ class Game:
         Make the next move, flipping opponent's discs. 
         """
 
-        # Place the disc for the next move
+        if self.next_move is None:
+            return
+
+        # Place chosen disc
         row, col = self.next_move[0], self.next_move[1]
         self.board.state[row, col] = self.active.disc_color
         
-        # Flip the opponent's discs
+        # Flip other discs
         self.flip() 
 
+        # Update history
+        self.prev_move = self.next_move
 
-    def is_game_finished(self):
-        pass
+
+    def is_board_full(self):
+        
+        for row in range(8):
+            for col in range(8):
+                cell_state = self.board.state[row, col]
+                if cell_state in [SquareType.EMPTY, SquareType.VALID]:
+                    return False
+        return True
+    
+
+    def check_finished(self):
+
+        # Game ends if neither player can move
+        if self.next_move is None and self.prev_move is None:
+            self.is_finished = True
+
+        # Game ends if board is full 
+        if self.is_board_full():
+            self.is_finished = True

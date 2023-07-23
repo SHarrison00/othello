@@ -1,21 +1,26 @@
 # untitled.py
 
+import time
+
 from game import Game
 from board import Board
 from player import PlayerType
 
-game = Game(PlayerType.OFFLINE, PlayerType.OFFLINE)
+game = Game(PlayerType.RANDOM, PlayerType.RANDOM)
 
-# Get move, make move, change turns, get valid moves
-game.board.display()
-game.get_player_move()
-game.make_move()
-game.change_turn()
-game.update_valid_moves()
+# print(game.is_finished())
 
-# Get move, make move, change turns, get valid moves
+while not game.is_finished:
+    
+    game.board.display()
+    game.get_player_move()
+    game.make_move()
+
+    game.change_turn()
+    game.update_valid_moves()
+    game.check_finished()
+
+    time.sleep(0.1)
+
 game.board.display()
-game.get_player_move()
-game.make_move()
-game.change_turn()
-game.update_valid_moves()
+print("game end.")

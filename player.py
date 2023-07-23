@@ -1,4 +1,6 @@
 
+import random
+
 from board import SquareType
 from enum import Enum
 
@@ -36,4 +38,25 @@ class Player:
                     print("Invalid move. Try again.")
             except (ValueError, IndexError):
                 print("Invalid input. Enter the move in the format 'e4'.")
-            
+
+
+    def get_random_move(self, game):
+        """
+        Retrieve random agent's move.
+        """
+
+        # Traverse board to find all valid moves
+        valid_moves = []
+        for row in range(8):
+            for col in range(8):
+                if game.board.state[row, col] == SquareType.VALID:
+                    valid_moves.append((row, col))
+
+        if not valid_moves:
+            return None
+        
+        # Randomly choose a move from valid moves
+        row, col = random.choice(valid_moves)
+
+        return row, col
+

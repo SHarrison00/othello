@@ -112,9 +112,7 @@ class TestGame(unittest.TestCase):
         ]
 
         game.board.state = np.array(NEARLY_FULL_BOARD)
-
-        VALID_MOVES = [(7, 7)]
-        game.update_valid_moves(VALID_MOVES)
+        game.update_valid_moves()
         self.assertEqual(game.board.state[7,7], SquareType.VALID)
 
     
@@ -126,8 +124,42 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.discs_to_flip(2 , 3), [(3, 3)])
 
 
+    def test_is_board_full_empty_board(self):
+        game = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
+        self.assertFalse(game.is_board_full())
+
+
+    def test_is_board_full_full_board(self):
+        game = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
+
+        for row in range(8):
+            for col in range(8):
+                game.board.state[row, col] = SquareType.BLACK
+        self.assertTrue(game.is_board_full())
+
+
     def test_get_offline_user_move(self):
         pass
+
+
+    def test_is_finished(self):
+        game1 = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
+        game1.next_move = (2, 3)
+        game1.is_finished()
+        assert not game1.is_finished, "Basic fail."
+
+        game2 = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
+        game2.next_move = None
+        game2.prev_move = None
+        game2.is_finished()
+        assert game2.is_finished, "'Neither move' fail."
+
+        game3 = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
+        for row in range(8):
+            for col in range(8):
+                game3.board.state[row, col] = SquareType.BLACK
+        game3.is_finished()
+        assert game3.is_finished, "Full board fail."
 
 
 if __name__ == '__main__':
