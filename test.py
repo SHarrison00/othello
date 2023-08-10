@@ -138,7 +138,7 @@ class TestGame(unittest.TestCase):
         self.assertTrue(game.is_board_full())
 
 
-    def test_get_offline_user_move(self):
+    def test_get_offline_move(self):
         pass
 
 

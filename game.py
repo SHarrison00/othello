@@ -137,15 +137,12 @@ class Game:
         """
 
         if self.active.player_type == PlayerType.OFFLINE:
-            row, col = self.active.get_offline_user_move(self)
+            row, col = self.active.get_offline_move(self)
 
         elif self.active.player_type == PlayerType.RANDOM:
             if self.active.get_random_move(self) == None:
-
                 # Need to think about how to hanlde when no moves valid for a player.
-
                 # Do we just use get_valid_moves() as a check? ...
-
                 # This would prevent case-by-case None checking.... 
                 return
             row, col = self.active.get_random_move(self)

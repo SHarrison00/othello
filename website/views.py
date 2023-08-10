@@ -2,8 +2,13 @@
 # for the front-end aspect of the website. It contains the code responsible for 
 # handling requests and rendering the appropriate responses to the users.
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, jsonify, session
+import pickle
+import logging 
+logging.basicConfig(level=logging.DEBUG)
+
 from game import Game
+from player import PlayerType
 
 views = Blueprint("views", __name__)
 
@@ -15,11 +20,54 @@ def home():
 
 @views.route('/play_game')
 def play_game():
+    serialized_game = session.get('game_instance')
 
-    # Instantiate a game instance
-    game_instance = Game("Sam", "Alistair")
+    if serialized_game:
+        # Deserialize the game instance
+        game = pickle.loads(serialized_game)
+    else:
+        # Create a new game instance
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
+        serialized_game = pickle.dumps(game)
+        session['game_instance'] = serialized_game
 
-    return render_template('play_game.html', game = game_instance)
+    return render_template('play_game.html', game=game)
+
+
+@views.route('/make_move', methods=['POST'])
+def make_move():
+    data = request.get_json()
+    row = data['row']
+    col = data['col']
+    
+    serialized_game = session.get('game_instance')
+    
+    if serialized_game:
+        # Deserialize the game instance
+        logging.debug(f"Received move: row={row}, col={col}")
+        game = pickle.loads(serialized_game)
+
+        # User's move, and game-flow mechanics
+        game.next_move = (row, col) # Bespoke for front-end
+        game.make_move()
+        game.change_turn()
+        game.update_valid_moves()
+        game.check_finished()
+
+        # Computer's move, and game-flow mechanics
+        game.get_player_move()
+        game.make_move()
+        game.update_valid_moves()
+        game.check_finished()
+
+        # Update serialized game instance in the session
+        session['game_instance'] = pickle.dumps(game)
+
+        # Return a JSON response indicating success or any relevant data
+        response_data = {'message': 'Move successful'}
+        return jsonify(response_data)
+    else:
+        return jsonify({'message': 'Game instance not found'})
 
 
 @views.route("/about")

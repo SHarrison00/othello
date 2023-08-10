@@ -20,7 +20,7 @@ class Player:
         self.disc_color = disc_color
 
     
-    def get_offline_user_move(self, game):
+    def get_offline_move(self, game):
         """
         Retrieve the offline player's move.
         """
@@ -59,4 +59,3 @@ class Player:
         row, col = random.choice(valid_moves)
 
         return row, col
-
