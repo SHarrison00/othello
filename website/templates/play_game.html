@@ -11,13 +11,13 @@
         <tr>
           {% for col in range(8) %}
             {% set cell = game.board.state[row][col] %}
-            <td class="cell">
+            <td class="cell" data-row="{{ row }}" data-col="{{ col }}">
               {% if cell.name == "BLACK" %}
                 <div class="black-disc"></div>
               {% elif cell.name == "WHITE" %}
                 <div class="white-disc"></div>
               {% elif cell.name == "VALID" %}
-                <div class="grey-disc" data-row="{{ row }}" data-col="{{ col }}"></div>
+                <div class="grey-disc"></div>
               {% endif %}
             </td>
           {% endfor %}

@@ -6,7 +6,7 @@ from game import Game
 from board import Board
 from player import PlayerType
 
-game = Game(PlayerType.RANDOM, PlayerType.RANDOM)
+game = Game(PlayerType.USER, PlayerType.OFFLINE)
 
 # print(game.is_finished())
 

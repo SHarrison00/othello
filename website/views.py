@@ -18,6 +18,11 @@ def home():
     return render_template("home.html")
 
 
+@views.route("/about")
+def about():
+    return render_template('about.html')
+
+
 @views.route('/play_game')
 def play_game():
     serialized_game = session.get('game_instance')
@@ -54,23 +59,30 @@ def make_move():
         game.update_valid_moves()
         game.check_finished()
 
-        # Computer's move, and game-flow mechanics
-        game.get_player_move()
-        game.make_move()
-        game.update_valid_moves()
-        game.check_finished()
-
         # Update serialized game instance in the session
         session['game_instance'] = pickle.dumps(game)
 
         # Return a JSON response indicating success or any relevant data
-        response_data = {'message': 'Move successful'}
+        response_data = {'message': 'Move received'}
         return jsonify(response_data)
     else:
         return jsonify({'message': 'Game instance not found'})
 
 
-@views.route("/about")
-def about():
-    return render_template('about.html')
- 
+@views.route('/get_game_state', methods=['GET'])
+def get_game_state():
+    serialized_game = session.get('game_instance')
+    
+    if serialized_game:
+        # Deserialize the game instance
+        game = pickle.loads(serialized_game)
+
+        # Convert the game state to a list of lists with string representations
+        # to make it serializable for JSON response.
+        game_state = [[cell.name for cell in row] for row in game.board.state]
+
+        # Create a dictionary with the game state
+        response_data = {'game_state': game_state}
+        return jsonify(response_data)
+    else:
+        return jsonify({'message': 'Game instance not found'})
