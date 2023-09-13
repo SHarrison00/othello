@@ -1,4 +1,4 @@
-# othello
+# Othello
 Programming Othello in Python from scratch.
 
-<img src="https://gifyu.com/image/S43zK" class="centerImage">
+<img src="https://s11.gifyu.com/images/S43zK.gif" class="centerImage">
