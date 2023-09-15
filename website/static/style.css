@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: Courier, monospace;
   background-color: #f2f2f2;
   font-size: 24px;
 }
@@ -7,6 +7,21 @@ body {
 h1 {
   color: #333;
   text-align: center;
+}
+
+.note {
+  font-size: 16px; 
+  margin-top: -30px; /* Adjust the top margin to reduce the gap */
+}
+
+.centered-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  margin-top: -80px;
 }
 
 .game-board {
