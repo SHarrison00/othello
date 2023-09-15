@@ -145,21 +145,42 @@ class TestGame(unittest.TestCase):
     def test_is_finished(self):
         game1 = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
         game1.next_move = (2, 3)
-        game1.is_finished()
+        game1.check_finished()
         assert not game1.is_finished, "Basic fail."
 
         game2 = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
         game2.next_move = None
         game2.prev_move = None
-        game2.is_finished()
+        game2.check_finished()
         assert game2.is_finished, "'Neither move' fail."
 
         game3 = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
         for row in range(8):
             for col in range(8):
                 game3.board.state[row, col] = SquareType.BLACK
-        game3.is_finished()
+        game3.check_finished()
         assert game3.is_finished, "Full board fail."
+
+
+    def test_no_valid_moves(self):
+        game = Game(PlayerType.RANDOM, PlayerType.RANDOM)
+
+        NO_VALID_MOVES_BOARD = [
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.EMPTY] * 8 
+        ]
+
+        game.board.state = np.array(NO_VALID_MOVES_BOARD)
+
+        # Assert next_move is set to None
+        game.get_player_move()
+        self.assertIsNone(game.next_move)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,6 @@
 
+import numpy as np
+
 from board import Board
 from board import SquareType
 from player import Player, PlayerType
@@ -24,9 +26,19 @@ class Game:
         self.next_move = None
         self.prev_move = None
 
+        # Scores, and winner
+        self.black_score = 2
+        self.white_score = 2
+        self.winner = None
+
 
     def change_turn(self):
         self.active, self.inactive = self.inactive, self.active
+
+
+    def update_scores(self):
+        self.black_score = np.count_nonzero(self.board.state == SquareType.BLACK)
+        self.white_score = np.count_nonzero(self.board.state == SquareType.WHITE)    
 
 
     def is_valid_move(self, row, col):
@@ -140,12 +152,10 @@ class Game:
             row, col = self.active.get_offline_move(self)
 
         elif self.active.player_type == PlayerType.RANDOM:
-            if self.active.get_random_move(self) == None:
-                # Need to think about how to hanlde when no moves valid for a player.
-                # Do we just use get_valid_moves() as a check? ...
-                # This would prevent case-by-case None checking.... 
+            move = self.active.get_random_move(self)
+            if move is None:
                 return
-            row, col = self.active.get_random_move(self)
+            row, col = move
 
         self.next_move = (row, col)
 

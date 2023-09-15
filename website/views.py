@@ -39,8 +39,8 @@ def play_game():
     return render_template('play_game.html', game=game)
 
 
-@views.route('/make_move', methods=['POST'])
-def make_move():
+@views.route('/user_move', methods=['POST'])
+def user_move():
     data = request.get_json()
     row = data['row']
     col = data['col']
@@ -63,11 +63,36 @@ def make_move():
         session['game_instance'] = pickle.dumps(game)
 
         # Return a JSON response indicating success or any relevant data
-        response_data = {'message': 'Move received'}
+        response_data = {'message': 'User move received'}
         return jsonify(response_data)
     else:
         return jsonify({'message': 'Game instance not found'})
+    
 
+@views.route('/agent_move', methods=['POST'])
+def agent_move():
+    serialized_game = session.get('game_instance')
+    
+    if serialized_game:
+        # Deserialize the game instance
+        game = pickle.loads(serialized_game)
+
+        # Agent's move, and game-flow mechanics
+        game.get_player_move()
+        game.make_move()
+        game.change_turn()
+        game.update_valid_moves()
+        game.check_finished()
+
+        # Update serialized game instance in the session
+        session['game_instance'] = pickle.dumps(game)
+
+        # Return a JSON response with the agent's move
+        response_data = {'message': 'Agent move received'}
+        return jsonify(response_data)
+    else:
+        return jsonify({'message': 'Game instance not found'})
+    
 
 @views.route('/get_game_state', methods=['GET'])
 def get_game_state():
