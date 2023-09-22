@@ -2,7 +2,11 @@
 # for the front-end aspect of the website. It contains the code responsible for 
 # handling requests and rendering the appropriate responses to the users.
 
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import (
+    Blueprint, render_template, request, 
+    jsonify, session, redirect, url_for
+)
+
 import pickle
 import logging 
 logging.basicConfig(level=logging.DEBUG)
@@ -23,20 +27,42 @@ def about():
     return render_template('about.html')
 
 
-@views.route('/play_game')
+@views.route('/play_game', methods=['GET', 'POST'])
 def play_game():
-    serialized_game = session.get('game_instance')
-
-    if serialized_game:
-        # Deserialize the game instance
-        game = pickle.loads(serialized_game)
-    else:
-        # Create a new game instance
-        game = Game(PlayerType.USER, PlayerType.RANDOM)
+    if request.method == 'POST':
+        # Handling POST request: Retrieve the user-selected color, initialize 
+        # the game accordingly store the game state in the session, and 
+        # redirect to the same endpoint to handle the GET request.
+        color = request.form.get('color')
+        session['user_color'] = color
+        
+        if color == 'BLACK':
+            game = Game(PlayerType.USER, PlayerType.RANDOM)
+        else:
+            game = Game(PlayerType.RANDOM, PlayerType.USER)
+        
         serialized_game = pickle.dumps(game)
         session['game_instance'] = serialized_game
-
-    return render_template('play_game.html', game=game)
+        session['game_started'] = True
+        
+        return redirect(url_for('views.play_game'))
+    
+    else:
+        # Handle GET request: Retrieve color and game instance from session, 
+        # deserialize if exists, and render. Else, create default game instance
+        color = session.get('user_color')
+        serialized_game = session.get('game_instance')
+        
+        if serialized_game:
+            game = pickle.loads(serialized_game)
+        else:
+            # Default game instance
+            game = Game(PlayerType.USER, PlayerType.RANDOM)
+            serialized_game = pickle.dumps(game)
+            session['game_instance'] = serialized_game
+        
+        return render_template('play_game.html', game=game, user_color=color, 
+                               game_started=session.get('game_started', False))
 
 
 @views.route('/user_move', methods=['POST'])

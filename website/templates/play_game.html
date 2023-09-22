@@ -3,28 +3,48 @@
 {% block title %}Play Game - My Website{% endblock %}
 
 {% block content %}
-  <h1>Play Game</h1>
+  <div class="game-container">
+    {% if not game_started %}
+      <div id="overlay" class="overlay">
+        <div class="overlay-content">
+          <form id="color-form" method="post">
+            <label for="color">Choose your color:</label>
+            <select name="color" id="color">
+              <option value="BLACK">Black</option>
+              <option value="WHITE">White</option>
+            </select>
+            <input type="submit" value="Start Game">
+          </form>
+        </div>
+      </div>
+    {% endif %}
 
-  <table class="game-board">
-    <tbody>
-      {% for row in range(8) %}
-        <tr>
-          {% for col in range(8) %}
-            {% set cell = game.board.state[row][col] %}
-            <td class="cell" data-row="{{ row }}" data-col="{{ col }}">
-              {% if cell.name == "BLACK" %}
-                <div class="black-disc"></div>
-              {% elif cell.name == "WHITE" %}
-                <div class="white-disc"></div>
-              {% elif cell.name == "VALID" %}
-                <div class="grey-disc"></div>
-              {% endif %}
-            </td>
-          {% endfor %}
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <table class="game-board">
+      <tbody>
+        {% for row in range(8) %}
+          <tr>
+            {% for col in range(8) %}
+              {% set cell = game.board.state[row][col] %}
+              <td class="cell" data-row="{{ row }}" data-col="{{ col }}">
+                {% if cell.name == "BLACK" %}
+                  <div class="black-disc"></div>
+                {% elif cell.name == "WHITE" %}
+                  <div class="white-disc"></div>
+                {% elif cell.name == "VALID" %}
+                  <div class="grey-disc"></div>
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Define userColor with value passed by form
+    let userColor = "{{ user_color }}";
+  </script>
 
   <script src="{{url_for('static', filename='game.js')}}"></script>
-  {% endblock %}
+{% endblock %}

@@ -36,68 +36,62 @@ function updateGameBoard() {
     });
 }
 
+// Click event handler for User's move
+function handleUserMove(event) {
+  const tdElement = event.target.closest('.cell');
+
+  if (tdElement) {
+    const row = parseInt(tdElement.dataset.row);
+    const col = parseInt(tdElement.dataset.col);
+
+    // AJAX request to backend for User's move
+    fetch('/user_move', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ row, col }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        updateGameBoard();
+        
+        // Proceed to Agent's move
+        handleAgentMove();
+      })
+      .catch(userError => {
+        console.error('User Error:', userError);
+      });
+  } else {
+    console.error('Invalid click, no parent <td> element found.');
+  }
+}
+
+function handleAgentMove() {
+  // Hide Agent's valid moves
+  validMovesVisible = false;
+
+  // Introduce 1.5s delay
+  setTimeout(() => {
+    // AJAX request to backend for Agent's move
+    fetch('/agent_move', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        updateGameBoard();
+        validMovesVisible = true;
+      })
+      .catch(agentError => {
+        console.error('Agent Error:', agentError);
+      });
+  }, 1500); // 1.5s delay
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-  // Click event handler for User's move
-  function handleUserMove(event) {
-    const tdElement = event.target.closest('.cell');
-
-    if (tdElement) {
-      const row = parseInt(tdElement.dataset.row);
-      const col = parseInt(tdElement.dataset.col);
-      console.log('Clicked valid cell at (row, col): (', row, ',', col, ')');
-
-      // AJAX request to backend for User's move
-      fetch('/user_move', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ row, col }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Response from backend:', data);
-
-          updateGameBoard();
-          
-          // Proceed to Agent's move
-          handleAgentMove();
-        })
-        .catch(userError => {
-          console.error('User Error:', userError);
-        });
-    } else {
-      console.error('Invalid click, no parent <td> element found.');
-    }
-  }
-
-  function handleAgentMove() {
-    // Hide Agent's valid moves
-    validMovesVisible = false;
-
-    // Introduce a 2-second delay
-    setTimeout(() => {
-      // AJAX request to backend for Agent's move
-      fetch('/agent_move', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Response from backend:', data);
-          
-          updateGameBoard();
-
-          validMovesVisible = true;
-        })
-        .catch(agentError => {
-          console.error('Agent Error:', agentError);
-        });
-    }, 2000); // 2-second delay
-  }
-
   // Attach a single event listener to a parent element (e.g., the table)
   const gameTable = document.querySelector('.game-board');
   gameTable.addEventListener('click', function (event) {
@@ -106,4 +100,15 @@ document.addEventListener('DOMContentLoaded', function () {
       handleUserMove(event);
     }
   });
+
+  // If the user is playing as "white", the agent should make the first move
+  if (userColor === 'WHITE') {
+    console.log("User selected WHITE");
+    validMovesVisible = false;
+    updateGameBoard();
+    setTimeout(() => {
+      console.log("Agent is making the first move");
+      handleAgentMove();
+    }, 100);
+  }
 });
