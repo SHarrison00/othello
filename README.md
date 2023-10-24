@@ -1,9 +1,9 @@
-# Othello AI WebApp
+# OthelloAI WebApp
 
 **Personal Project** (Ongoing): Developing a full-stack web application for the board game Othello with AI opponents, focusing on programming best practices and continuous AI development.
 
-- Latest: Front-end now playable against random agent (see GIF).
+- Latest: User can now play as white or black.  
 
-- Next steps: Start developing smart agents, e.g. Monte-Carlo Tree Search 
+- Next steps: Start developing AI agents (e.g. Minimax) and look into hosting (e.g. Heroku). 
 
-<img src="https://s11.gifyu.com/images/S43zK.gif" class="centerImage">
+<img src="https://s6.gifyu.com/images/S4YYA.gif" class="centerImage">
