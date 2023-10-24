@@ -7,7 +7,8 @@ from player import Player, PlayerType
 
 class Game:
     """
-    Main orchestrator, managing overall game flow.    
+    Handles the overall game flow, creating a Board() instance and two Player() 
+    instances for black and white, respectively.   
     """
 
     def __init__(self, player_type_black, player_type_white):
@@ -44,7 +45,7 @@ class Game:
     def is_valid_move(self, row, col):
         """
         Checks the validity of a move. Involves traversing in different 
-        DIRECTIONS on the board, and checking the traversed sequence of discs.
+        directions on the board, and checking the traversed sequence of discs.
 
         Args:
             row (int): The row coordinate of the move.

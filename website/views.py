@@ -88,9 +88,13 @@ def user_move():
         # Update serialized game instance in the session
         session['game_instance'] = pickle.dumps(game)
 
-        # Return a JSON response indicating success or any relevant data
-        response_data = {'message': 'User move received'}
-        return jsonify(response_data)
+        # If game has ended, include in response to frontend
+        if game.is_finished:
+            response = {'message': 'Game over', 'game_over': True}
+        else:
+            response = {'message': 'User move received', 'game_over': False}
+
+        return jsonify(response)
     else:
         return jsonify({'message': 'Game instance not found'})
     
@@ -113,9 +117,13 @@ def agent_move():
         # Update serialized game instance in the session
         session['game_instance'] = pickle.dumps(game)
 
-        # Return a JSON response with the agent's move
-        response_data = {'message': 'Agent move received'}
-        return jsonify(response_data)
+        # If game has ended, include in response to frontend
+        if game.is_finished:
+            response = {'message': 'Game over', 'game_over': True}
+        else:
+            response = {'message': 'Agent move received', 'game_over': False}
+
+        return jsonify(response)
     else:
         return jsonify({'message': 'Game instance not found'})
     
@@ -133,7 +141,7 @@ def get_game_state():
         game_state = [[cell.name for cell in row] for row in game.board.state]
 
         # Create a dictionary with the game state
-        response_data = {'game_state': game_state}
-        return jsonify(response_data)
+        response = {'game_state': game_state}
+        return jsonify(response)
     else:
         return jsonify({'message': 'Game instance not found'})

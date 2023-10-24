@@ -11,7 +11,7 @@ class SquareType(Enum):
 
 class Board:
     """
-    Handles the game board, its state, and valid moves.
+    Represents the state of the game board.
     """
 
     def __init__(self):

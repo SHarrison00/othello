@@ -54,10 +54,12 @@ function handleUserMove(event) {
     })
       .then(response => response.json())
       .then(data => {
+        console.log('Response from backend:', data);
         updateGameBoard();
-        
-        // Proceed to Agent's move
-        handleAgentMove();
+        // Only proceed to Agent's move if game not over
+        if (!data.game_over) {
+          handleAgentMove();
+        }
       })
       .catch(userError => {
         console.error('User Error:', userError);
@@ -68,7 +70,7 @@ function handleUserMove(event) {
 }
 
 function handleAgentMove() {
-  // Hide Agent's valid moves
+  // Hide valid moves for agent
   validMovesVisible = false;
 
   // Introduce 1.5s delay
@@ -82,7 +84,10 @@ function handleAgentMove() {
     })
       .then(response => response.json())
       .then(data => {
+        console.log('Response from backend:', data);
         updateGameBoard();
+
+        // Turn back-on valid moves for user
         validMovesVisible = true;
       })
       .catch(agentError => {

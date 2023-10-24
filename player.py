@@ -8,11 +8,13 @@ class PlayerType(Enum):
     USER = 'user'
     OFFLINE = 'offline'
     RANDOM = 'random_agent'
+    MINIMAX = 'minimax'
 
 
 class Player:
     """
-    Representing the player and their strategy.
+    Represents each Othello player, storing information about the type of 
+    player (e.g., user, or AI) and disc colour.
     """
 
     def __init__(self, player_type: PlayerType, disc_color: SquareType):
@@ -59,3 +61,11 @@ class Player:
         row, col = random.choice(valid_moves)
 
         return row, col
+    
+
+    def get_minimax_move(self, game):
+        """
+        Retrieve minimax agent's move.
+        """
+
+
