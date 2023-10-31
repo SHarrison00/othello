@@ -51,18 +51,3 @@ while not game.is_finished:
 game.board.display()
 # Message to acknowledge end of game 
 print("Game over.")
-
-# Morning tasks,
-
-    # 1. Add print statements "Black to move.", "White to move."
-    # 2. Can we make the offline player choose their colour?
-        # Do this feature enhance anything, or?
-
-
-# python play_othello_console.py (find a better name)
-# Enter a move: D3 (improve clarity of print message)
-# <Update board>
-# White to move etc.
-
-# Turn program into GIF
-    # Demonstrates console development
