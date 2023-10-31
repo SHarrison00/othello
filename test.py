@@ -1,12 +1,12 @@
 
 import unittest
 import numpy as np
-
 from game import Game
 from board import Board
 from board import SquareType
 from player import Player
 from player import PlayerType
+from state_evaluation import StateEvaluator
 
 class TestGame(unittest.TestCase):
     """
@@ -182,6 +182,28 @@ class TestGame(unittest.TestCase):
         game.get_player_move()
         self.assertIsNone(game.next_move)
 
+
+    def test_disc_diff(self):
+        NEARLY_FULL_BOARD = np.array([
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.BLACK] * 8,
+            [SquareType.WHITE] * 8,
+            [SquareType.WHITE] * 8,
+            [SquareType.WHITE] * 8,
+            [SquareType.WHITE] * 7 + [SquareType.EMPTY],
+        ])
+
+        state_eval = StateEvaluator()
+        result = state_eval.disc_diff(NEARLY_FULL_BOARD)
+
+        # (32 - 31) / (32 + 31) = 1 / 63 ~= 0.01587 (4s.f)
+        EXPECTED_RESULT = 0.01587
+
+        # Use assertAlmostEqual, due to potential floating point inaccuracies
+        self.assertAlmostEqual(result, EXPECTED_RESULT, places=4)
+        
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

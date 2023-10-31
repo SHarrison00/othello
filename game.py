@@ -1,6 +1,5 @@
 
 import numpy as np
-
 from board import Board
 from board import SquareType
 from player import Player, PlayerType

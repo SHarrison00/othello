@@ -1,8 +1,8 @@
 
 import random
-
-from board import SquareType
 from enum import Enum
+from board import SquareType
+from state_evaluation import StateEvaluator
 
 class PlayerType(Enum):
     USER = 'user'
@@ -13,13 +13,26 @@ class PlayerType(Enum):
 
 class Player:
     """
-    Represents each Othello player, storing information about the type of 
-    player (e.g., user, or AI) and disc colour.
+    Represents an Othello player, detailing player type (e.g., user, or AI), 
+    disc color, and any strategy for evaluating game states (e.g. Minimax).
     """
 
-    def __init__(self, player_type: PlayerType, disc_color: SquareType):
+    def __init__(self, 
+                 player_type: PlayerType, 
+                 disc_color: SquareType, 
+                 state_eval: StateEvaluator = None):
+        """
+        Initializes a player with a type, disc color, and an optional 
+        state evaluation strategy.
+
+        Args:
+            player_type (PlayerType): The type of the player (e.g., user, AI).
+            disc_color (SquareType): The color of the player's disc.
+            state_eval (StateEvaluator, optional): Strategy for evaluating game states.
+        """
         self.player_type = player_type
         self.disc_color = disc_color
+        self.state_eval = state_eval if state_eval else StateEvaluator()
 
     
     def get_offline_move(self, game):
@@ -61,11 +74,3 @@ class Player:
         row, col = random.choice(valid_moves)
 
         return row, col
-    
-
-    def get_minimax_move(self, game):
-        """
-        Retrieve minimax agent's move.
-        """
-
-
