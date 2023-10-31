@@ -29,18 +29,14 @@ class StateEvaluator:
             raise ValueError("Heuristic weights must sum to 1.")
         
 
-    def disc_diff(self, board_state):
-        """
-        Calculates normalized disc difference between black and white player.
-        
-        Returns a value between -1 and 1, indicating an advantage for black 
-        (positive) or white (negative).
-        """
-        black_discs = np.count_nonzero(board_state == SquareType.BLACK)
-        white_discs = np.count_nonzero(board_state == SquareType.WHITE)
-        
-        # Avoid division by zero
-        if black_discs + white_discs == 0:
-            return 0
+    def count_valid_moves(self, game, disc_color):
+        return len(game.get_valid_moves_by_color(disc_color))
+    
 
-        return (black_discs - white_discs) / (black_discs + white_discs)
+    def count_discs(self, game, disc_color):
+        if disc_color == SquareType.BLACK:
+            return game.black_score
+        elif disc_color == SquareType.WHITE:
+            return game.white_score
+        else:
+            raise ValueError("Invalid color specified.")

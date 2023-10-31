@@ -112,6 +112,38 @@ class Game:
         ]
     
 
+    def get_valid_moves_by_color(self, color):
+        """
+        Get all valid moves for a specified color.
+        """
+        # Store original active and inactive players
+        original_active = self.active
+        original_inactive = self.inactive
+
+        # Set the active player based on the specified color
+        if color == SquareType.BLACK:
+            self.active = self.player_black
+            self.inactive = self.player_white
+        elif color == SquareType.WHITE:
+            self.active = self.player_white
+            self.inactive = self.player_black
+        else:
+            raise ValueError("Invalid color specified.")
+
+        valid_moves = [
+            (row, col)
+            for row in range(8)
+            for col in range(8)
+            if self.is_valid_move(row, col)
+        ]
+
+        # Restore the original active and inactive players
+        self.active = original_active
+        self.inactive = original_inactive
+
+        return valid_moves
+
+
     def reset_valid_moves(self):
         """
         Reset all valid moves on the board to empty.

@@ -10,7 +10,7 @@ from state_evaluation import StateEvaluator
 
 class TestGame(unittest.TestCase):
     """
-    Test functionality for the Game base class.
+    Test functionality for the Game class.
     """
 
     def test_player_colors(self):
@@ -183,27 +183,63 @@ class TestGame(unittest.TestCase):
         self.assertIsNone(game.next_move)
 
 
-    def test_disc_diff(self):
-        NEARLY_FULL_BOARD = np.array([
-            [SquareType.BLACK] * 8,
-            [SquareType.BLACK] * 8,
-            [SquareType.BLACK] * 8,
-            [SquareType.BLACK] * 8,
-            [SquareType.WHITE] * 8,
-            [SquareType.WHITE] * 8,
-            [SquareType.WHITE] * 8,
-            [SquareType.WHITE] * 7 + [SquareType.EMPTY],
-        ])
+    def test_get_valid_moves_by_color(self):
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
 
-        state_eval = StateEvaluator()
-        result = state_eval.disc_diff(NEARLY_FULL_BOARD)
+        # Expected valid moves for black and white
+        EXPECTED_BLACK_VALID_MOVES = [(2, 3), (3, 2), (4, 5), (5, 4)]
+        EXPECTED_WHITE_VALID_MOVES = [(2, 4), (3, 5), (4, 2), (5, 3)]
 
-        # (32 - 31) / (32 + 31) = 1 / 63 ~= 0.01587 (4s.f)
-        EXPECTED_RESULT = 0.01587
 
-        # Use assertAlmostEqual, due to potential floating point inaccuracies
-        self.assertAlmostEqual(result, EXPECTED_RESULT, places=4)
-        
+        # Fetch valid moves using the function
+        black_valid_moves = game.get_valid_moves_by_color(SquareType.BLACK)
+        white_valid_moves = game.get_valid_moves_by_color(SquareType.WHITE)
+
+        # Assert the fetched moves match the expected moves
+        self.assertListEqual(black_valid_moves, EXPECTED_BLACK_VALID_MOVES)
+        self.assertListEqual(white_valid_moves, EXPECTED_WHITE_VALID_MOVES)
+
+
+
+
+class TestStateEvaluator(unittest.TestCase):
+    """
+    Test functionality for the StateEvaluator class.
+    """
+
+    def test_count_valid_moves(self):
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
+        evaluator = StateEvaluator()
+
+        # Expected valid moves for black and white
+        EXPECTED_BLACK_VALID_MOVES_COUNT = 4
+        EXPECTED_WHITE_VALID_MOVES_COUNT = 4
+
+        # Fetch valid moves count using the function
+        black_valid_moves_count = evaluator.count_valid_moves(game, SquareType.BLACK)
+        white_valid_moves_count = evaluator.count_valid_moves(game, SquareType.WHITE)
+
+        # Assert the fetched moves count match the expected count
+        self.assertEqual(black_valid_moves_count, EXPECTED_BLACK_VALID_MOVES_COUNT)
+        self.assertEqual(white_valid_moves_count, EXPECTED_WHITE_VALID_MOVES_COUNT)
+
+
+    def test_count_discs(self):
+        game = Game(PlayerType.USER, PlayerType.RANDOM)
+        evaluator = StateEvaluator()
+
+        # Expected disc count for black and white
+        EXPECTED_BLACK_DISC_COUNT = 2
+        EXPECTED_WHITE_DISC_COUNT = 2
+
+        # Fetch disc count using the function
+        black_disc_count = evaluator.count_discs(game, SquareType.BLACK)
+        white_disc_count = evaluator.count_discs(game, SquareType.WHITE)
+
+        # Assert the fetched disc count match the expected count
+        self.assertEqual(black_disc_count, EXPECTED_BLACK_DISC_COUNT)
+        self.assertEqual(white_disc_count, EXPECTED_WHITE_DISC_COUNT)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
