@@ -28,7 +28,7 @@ class Player:
         Args:
             player_type (PlayerType): The type of the player (e.g., user, AI).
             disc_color (SquareType): The color of the player's disc.
-            state_eval (StateEvaluator, optional): Strategy for evaluating game states.
+            state_eval (StateEvaluator, optional): Strategy state evaluation.
         """
         self.player_type = player_type
         self.disc_color = disc_color

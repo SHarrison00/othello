@@ -6,7 +6,7 @@ from board import Board
 from board import SquareType
 from player import Player
 from player import PlayerType
-from state_evaluation import StateEvaluator
+from state_evaluation import StateEvaluator, HeuristicType
 
 class TestGame(unittest.TestCase):
     """
@@ -138,10 +138,6 @@ class TestGame(unittest.TestCase):
         self.assertTrue(game.is_board_full())
 
 
-    def test_get_offline_move(self):
-        pass
-
-
     def test_is_finished(self):
         game1 = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
         game1.next_move = (2, 3)
@@ -202,6 +198,34 @@ class TestGame(unittest.TestCase):
 
 
 
+class TestPlayer(unittest.TestCase):
+    """
+    Test functionality related to the Player class.
+    """
+
+    def test_state_evaluator_integration_with_player(self):
+        # Initialize a StateEvaluator with custom weights
+        custom_weights = {
+            "disc_diff": 0.7,
+            "mobility": 0.3
+        }
+        state_evaluator = StateEvaluator(weights=custom_weights)
+        
+        # Initialize a player with this StateEvaluator
+        player = Player(PlayerType.MINIMAX, SquareType.BLACK, state_evaluator)
+        
+        # Initialize game to use in testing evaluator methods
+        game = Game(player, PlayerType.RANDOM)
+        
+        # Check StateEvaluator's methods work correctly when called from player
+        valid_moves_count = player.state_eval.count_valid_moves(game, player.disc_color)
+        disc_count = player.state_eval.count_discs(game, player.disc_color)
+        self.assertEqual(valid_moves_count, 4)
+        self.assertEqual(disc_count, 2)
+
+
+
+
 class TestStateEvaluator(unittest.TestCase):
     """
     Test functionality for the StateEvaluator class.
@@ -239,6 +263,75 @@ class TestStateEvaluator(unittest.TestCase):
         # Assert the fetched disc count match the expected count
         self.assertEqual(black_disc_count, EXPECTED_BLACK_DISC_COUNT)
         self.assertEqual(white_disc_count, EXPECTED_WHITE_DISC_COUNT)
+
+
+
+
+class TestHeuristics(unittest.TestCase):
+    """
+    Test functionality of any heuristic functions.
+    """
+        
+    def setUp(self):
+        """
+        Set up a non-trivial board state for testing.
+        """
+        self.game = Game(PlayerType.USER, PlayerType.RANDOM)
+
+        # Clear the board for a custom setup
+        self.game.board.state = np.full((8, 8), SquareType.EMPTY)
+
+        # Place discs for a non-trivial state, 
+        # e.g. Black plays D3 
+        self.game.board.state[2, 3] = SquareType.BLACK
+        # Initial Othello "square" then looks like,
+        self.game.board.state[3, 3] = SquareType.BLACK
+        self.game.board.state[3, 4] = SquareType.BLACK
+        self.game.board.state[4, 3] = SquareType.BLACK
+        self.game.board.state[4, 4] = SquareType.WHITE
+
+        # Update scores based on new board
+        self.game.update_scores()
+
+        # Custom weights for testing
+        custom_weights = {
+            HeuristicType.DISC_DIFF: 0.7,
+            HeuristicType.MOBILITY: 0.3
+        }
+        
+        # Initialize StateEvaluator
+        self.evaluator = StateEvaluator(weights=custom_weights)
+
+
+    def test_disc_diff_heuristic(self):
+        """
+        Test the disc difference heuristic on a non-trivial board state.
+        """
+        EXPECTED_DISC_DIFF = 0.6
+        disc_diff = self.evaluator.disc_diff_heuristic(self.game)
+        self.assertEqual(disc_diff, EXPECTED_DISC_DIFF, 
+                         "Disc difference heuristic evaluated incorrectly.")
+
+
+    def test_mobility_heuristic(self):
+        """
+        Test the mobility heuristic on a non-trivial board state.
+        """
+        EXPECTED_MOBILITY = 0.0
+        mobility = self.evaluator.mobility_heuristic(self.game)
+        self.assertEqual(mobility, EXPECTED_MOBILITY, 
+                         "Mobility heuristic evaluated incorrectly.")
+        
+
+    def test_evaluate(self):
+        """
+        Test evaluate function with custom weighted combination of heuristics.
+        """
+        EXPECTED_EVALUATION_SCORE = 0.42
+        evaluation_score = self.evaluator.evaluate(self.game)
+        # Assert the score is as expected
+        self.assertEqual(evaluation_score, EXPECTED_EVALUATION_SCORE, 
+                         "Evaluate function didn't return expected score.")
 
 
 if __name__ == '__main__':
