@@ -1,5 +1,6 @@
 
 import numpy as np
+import copy
 from board import Board
 from board import SquareType
 from player import Player, PlayerType
@@ -287,3 +288,32 @@ class Game:
         # Game ends if board is full 
         if self.is_board_full():
             self.is_finished = True
+
+
+    def simulate_move(self, move):
+        """
+        Simulate move in the game by creating a copy of the current game state,
+        applying the move, and returning the new game state.
+
+        Args:
+            move (tuple): Move to be made, represented as a tuple (row, col).
+
+        Returns:
+            Game: A new game instance with the move applied.
+        """
+        # Create a deep copy of the game to avoid altering the original game
+        new_game = copy.deepcopy(self)
+
+        # Apply the move
+        new_game.next_move = move
+        new_game.make_move()
+
+        # Change turns, update valid moves, and scores
+        new_game.change_turn()
+        new_game.update_valid_moves()
+        new_game.update_scores()
+
+        # Check if the game has ended
+        new_game.check_finished()
+
+        return new_game

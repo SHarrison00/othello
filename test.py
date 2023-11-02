@@ -329,10 +329,54 @@ class TestHeuristics(unittest.TestCase):
         """
         EXPECTED_EVALUATION_SCORE = 0.42
         evaluation_score = self.evaluator.evaluate(self.game)
-        # Assert the score is as expected
         self.assertEqual(evaluation_score, EXPECTED_EVALUATION_SCORE, 
                          "Evaluate function didn't return expected score.")
+        
 
+
+
+class TestSimulateMove(unittest.TestCase):
+
+    def setUp(self):
+        """
+        Set up an initial board state for testing the simulate_move function.
+        """
+        self.game = Game(PlayerType.USER, PlayerType.RANDOM)
+        self.initial_board = self.game.board.state.copy()
+
+
+    def test_simulate_move_d3(self):
+        """
+        Test simulate_move correctly simulates a move when black plays D3.
+        """
+        # Black plays D3
+        move = (2, 3)
+        simulated_game = self.game.simulate_move(move)
+        
+        # Check if the simulated game's board state has changed correctly
+        self.assertFalse(np.array_equal(self.initial_board, simulated_game.board.state),
+                         "The board state should have changed after simulating the move.")
+        
+        # Check if the move at D3 has been played by black
+        self.assertEqual(simulated_game.board.state[move], SquareType.BLACK,
+                         "D3 should be occupied by black.")
+        
+        # Check if the active player has changed to white after black's move
+        self.assertEqual(simulated_game.active.disc_color, SquareType.WHITE,
+                         "The active player should now be white.")
+
+        # Check that the number of valid moves for white has been updated
+        white_valid_moves = simulated_game.get_valid_moves_by_color(SquareType.WHITE)
+        self.assertTrue(len(white_valid_moves) == 3,
+                        "White should have at least three valid moves after black plays D3.")
+
+        # Check that the scores have been updated correctly
+        # Assuming that black's D3 move flips one white disc to black
+        self.assertEqual(simulated_game.black_score, 4,
+                         "Black should have a score of 4 after playing D3.")
+        self.assertEqual(simulated_game.white_score, 1,
+                         "White should have a score of 1 after black plays D3.")
+        
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

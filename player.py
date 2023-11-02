@@ -74,3 +74,8 @@ class Player:
         row, col = random.choice(valid_moves)
 
         return row, col
+    
+
+
+
+
