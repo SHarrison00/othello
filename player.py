@@ -76,6 +76,41 @@ class Player:
         return row, col
     
 
+    def minimax(self, game, depth, maximizing_player):
+        """
+        Implementation of the Minimax algorithm that calculates the best move 
+        for a given game state.
 
+        Args:
+            game (Game): The current state of the game.
+            depth (int): The maximum depth to explore in the game tree.
+            maximizing_player (bool): True if current player is maximizing; 
+                                      otherwise, False.
 
+        Returns:
+            float: The optimal score a maximizing player can aim for, or the 
+                optimal score a minimizing player can concede - in the given 
+                game state.
+        """
+        # Base case: return board's value if reach max-depth, or game is over
+        if depth == 0 or game.is_finished:
+            return self.state_eval.evaluate(game)
+
+        # Maximizing player's turn
+        if maximizing_player:
+            max_eval = float('-inf')
+            for move in game.get_valid_moves_by_color(self.disc_color):
+                simulated_game = game.simulate_move(move)
+                eval = self.minimax(simulated_game, depth - 1, False)
+                max_eval = max(max_eval, eval)
+            return max_eval
+
+        # Minimizing player's turn
+        else:
+            min_eval = float('inf')
+            for move in game.get_valid_moves_by_color(self.disc_color):
+                simulated_game = game.simulate_move(move)
+                eval = self.minimax(simulated_game, depth - 1, True)
+                min_eval = min(min_eval, eval)
+            return min_eval
 

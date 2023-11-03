@@ -317,3 +317,5 @@ class Game:
         new_game.check_finished()
 
         return new_game
+    
+    
