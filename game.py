@@ -11,13 +11,13 @@ class Game:
     instances for black and white, respectively.   
     """
 
-    def __init__(self, player_type_black, player_type_white):
+    def __init__(self, player_black, player_white):
         self.board = Board()
         self.is_finished = False
 
-        # Player instances are inputs 
-        self.player_black = Player(player_type_black, SquareType.BLACK)
-        self.player_white = Player(player_type_white, SquareType.WHITE)
+        # Directly assign the provided Player instances
+        self.player_black = player_black
+        self.player_white = player_white
 
         # Black always starts
         self.active = self.player_black
