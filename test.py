@@ -383,14 +383,14 @@ class TestMinimax(unittest.TestCase):
         state_evaluator = StateEvaluator()
 
         # Initialize a minimax player with the StateEvaluator
-        minimax_player = Player(PlayerType.MINIMAX, SquareType.BLACK, state_evaluator)
-        random_player = Player(PlayerType.RANDOM, SquareType.WHITE)
+        minimax_player_black = Player(PlayerType.MINIMAX, SquareType.BLACK, state_evaluator)
+        minimax_player_white = Player(PlayerType.MINIMAX, SquareType.WHITE, state_evaluator)
         
         # Initialize the game with minimax as black and random as white
-        self.game = Game(minimax_player, random_player)
+        self.game = Game(minimax_player_black, minimax_player_white)
 
 
-    def test_minimax_initial_moves(self):
+    def test_minimax_base_case(self):
         """
         Test minimax values for all possible initial moves for Black. Evaluates 
         the immediate impact of each move according to base case of Minimax. 
@@ -408,12 +408,38 @@ class TestMinimax(unittest.TestCase):
             # Calculate the minimax value for the resulting game state at the base case,
             # where depth is 0. This will invoke the heuristic evaluation directly
             # since the base case does not involve recursive lookahead.
-            minimax_value = self.game.player_black.minimax(simulated_game, 0, True)
+            minimax_value = simulated_game.player_black.minimax(simulated_game, 0, True)
             
             # Assert that the minimax value is as expected
             self.assertEqual(minimax_value, EXPECTED_MINIMAX_VALUE,
                 f"Minimax value for {move}  expected to be {EXPECTED_MINIMAX_VALUE}, but got {minimax_value}.")
+            
 
+    def test_minimax_recursion(self):
+        """
+        Test the recursive behavior of the Minimax algorithm by evaluating the 
+        potential moves for White after Black plays D3, and ensuring that the 
+        algorithm correctly calculates the minimax value two levels deep (i.e.
+        depth = 2, where 'Black plays D3' is the initial state).
+        """
+        # Black plays D3 (initial state)
+        simulated_game = self.game.simulate_move((2, 3))
 
+        # Looking 2 moves ahead, i.e all possible White moves, and Black responses
+        white_moves = simulated_game.player_white.minimax_evaluate_moves(simulated_game, 2)
+
+        # Define the expected minimax values for White's possible moves
+        EXPECTED_MINIMAX_VALUES = {
+            (2, 2): 0.08928571428571427, # 5/56
+            (2, 4): 0.16883116883116883, # 13/77
+            (4, 2): 0.21428571428571427  # 3/14
+        }
+
+        # Check calculated minimax values match expected values
+        for move, value in white_moves:
+            self.assertAlmostEqual(value, EXPECTED_MINIMAX_VALUES[move],
+                msg=f"Minimax value for move {move} expected to be {EXPECTED_MINIMAX_VALUES[move]}, but got {value}.")
+
+        
 if __name__ == '__main__':
     unittest.main(verbosity=2)

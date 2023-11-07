@@ -92,15 +92,19 @@ class Player:
                 optimal score a minimizing player can concede - in the given 
                 game state.
         """
-        # Base case: return board's value if reach max-depth, or game is over
+        # Base case. Return board's value if reach max-depth, or game is over
         if depth == 0 or game.is_finished:
             return self.state_eval.evaluate(game)
 
         # Maximizing player's turn
         if maximizing_player:
             max_eval = float('-inf')
-            for move in game.get_valid_moves_by_color(self.disc_color):
+            # Iterator across all moves for the active player
+            for move in game.get_valid_moves_by_color(game.active.disc_color):
+                # Simulate the move
                 simulated_game = game.simulate_move(move)
+
+                # Evaluate and update
                 eval = self.minimax(simulated_game, depth - 1, False)
                 max_eval = max(max_eval, eval)
             return max_eval
@@ -108,9 +112,42 @@ class Player:
         # Minimizing player's turn
         else:
             min_eval = float('inf')
-            for move in game.get_valid_moves_by_color(self.disc_color):
+            # Iterator across all moves for the active player
+            for move in game.get_valid_moves_by_color(game.active.disc_color):
+                # Simulate the move
                 simulated_game = game.simulate_move(move)
+
+                # Evaluate and update
                 eval = self.minimax(simulated_game, depth - 1, True)
                 min_eval = min(min_eval, eval)
             return min_eval
+        
+
+    def minimax_evaluate_moves(self, game, depth):
+        """
+        Returns a list of valid moves for the active player along with 
+        their associated minimax values.
+
+        Args:
+            game (Game): The current game state.
+            depth (int): Depth to which the minimax algorithm should search.
+
+        Returns:
+            List[Tuple[Tuple[int, int], float]]: A list of tuples, each 
+            containing a valid move and its associated minimax value.
+        """
+        moves_with_values = []
+        for move in game.get_valid_moves_by_color(self.disc_color):
+            simulated_game = game.simulate_move(move)
+
+            # Compute the minimax value
+            minimax_value = self.minimax(
+                simulated_game, 
+                depth - 1, 
+                self.disc_color == SquareType.BLACK
+            )
+
+            # Add minimax value to list
+            moves_with_values.append((move, minimax_value))
+        return moves_with_values
 
