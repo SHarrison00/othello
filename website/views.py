@@ -12,7 +12,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 from game import Game
-from player import PlayerType
+from board import SquareType
+from player import Player, PlayerType
 
 views = Blueprint("views", __name__)
 
@@ -36,10 +37,16 @@ def play_game():
         color = request.form.get('color')
         session['user_color'] = color
         
+        # Create Player instances based on the selected color
         if color == 'BLACK':
-            game = Game(PlayerType.USER, PlayerType.RANDOM)
+            user_player = Player(PlayerType.USER, SquareType.BLACK)
+            ai_player = Player(PlayerType.RANDOM, SquareType.WHITE)
         else:
-            game = Game(PlayerType.RANDOM, PlayerType.USER)
+            user_player = Player(PlayerType.USER, SquareType.WHITE)
+            ai_player = Player(PlayerType.RANDOM, SquareType.BLACK)
+        
+        # Initialize the game with the created player instances
+        game = Game(user_player, ai_player)
         
         serialized_game = pickle.dumps(game)
         session['game_instance'] = serialized_game
