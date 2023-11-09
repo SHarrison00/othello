@@ -20,7 +20,8 @@ class Player:
     def __init__(self, 
                  player_type: PlayerType, 
                  disc_color: SquareType, 
-                 state_eval: StateEvaluator = None):
+                 state_eval: StateEvaluator = None,
+                 depth: int = 2):
         """
         Initializes a player with a type, disc color, and an optional 
         state evaluation strategy.
@@ -33,6 +34,7 @@ class Player:
         self.player_type = player_type
         self.disc_color = disc_color
         self.state_eval = state_eval if state_eval else StateEvaluator()
+        self.depth = depth
 
     
     def get_offline_move(self, game):
@@ -123,7 +125,7 @@ class Player:
             return min_eval
         
 
-    def minimax_evaluate_moves(self, game, depth):
+    def minimax_evaluate_moves(self, game):
         """
         Returns a list of valid moves for the active player along with 
         their associated minimax values.
@@ -143,7 +145,7 @@ class Player:
             # Compute the minimax value
             minimax_value = self.minimax(
                 simulated_game, 
-                depth - 1, 
+                self.depth - 1, 
                 self.disc_color == SquareType.BLACK
             )
 

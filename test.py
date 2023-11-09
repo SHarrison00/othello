@@ -426,7 +426,8 @@ class TestMinimax(unittest.TestCase):
         simulated_game = self.game.simulate_move((2, 3))
 
         # Looking 2 moves ahead, i.e all possible White moves, and Black responses
-        white_moves = simulated_game.player_white.minimax_evaluate_moves(simulated_game, 2)
+        simulated_game.player_white.depth = 2
+        white_moves = simulated_game.player_white.minimax_evaluate_moves(simulated_game)
 
         # Define the expected minimax values for White's possible moves
         EXPECTED_MINIMAX_VALUES = {
