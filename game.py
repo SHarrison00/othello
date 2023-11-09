@@ -30,7 +30,7 @@ class Game:
         # Scores, and winner
         self.black_score = 2
         self.white_score = 2
-        self.winner = None
+        self.game_result = None
 
 
     def change_turn(self):
@@ -280,14 +280,34 @@ class Game:
     
 
     def check_finished(self):
-
+        """
+        Checks if game has ended based on two conditions: if no further moves 
+        are possible for both players, or if the board is full. If the game is 
+        finished, it determines the winner or declares a draw.
+        """
         # Game ends if neither player can move
         if self.next_move is None and self.prev_move is None:
             self.is_finished = True
+            self.determine_winner()
 
-        # Game ends if board is full 
-        if self.is_board_full():
+        # Game ends if the board is full 
+        elif self.is_board_full():
             self.is_finished = True
+            self.determine_winner()
+
+    
+    def determine_winner(self):
+        """
+        Determines the winner of the game by comparing the scores of both 
+        players. Sets the game's result attribute to the color of the winning 
+        player, or marks it as a draw.
+        """
+        if self.black_score > self.white_score:
+            self.game_result = "Black"
+        elif self.white_score > self.black_score:
+            self.game_result = "White"
+        else:
+            self.game_result = "Draw"
 
 
     def simulate_move(self, move):

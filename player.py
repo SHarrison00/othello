@@ -96,7 +96,7 @@ class Player:
         """
         # Base case. Return board's value if reach max-depth, or game is over
         if depth == 0 or game.is_finished:
-            return self.state_eval.evaluate(game)
+            return self.state_eval.evaluate(game)            
 
         # Maximizing player's turn
         if maximizing_player:

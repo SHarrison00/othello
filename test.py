@@ -167,6 +167,39 @@ class TestGame(unittest.TestCase):
         self.assertListEqual(black_valid_moves, EXPECTED_BLACK_VALID_MOVES)
         self.assertListEqual(white_valid_moves, EXPECTED_WHITE_VALID_MOVES)
 
+    
+    def test_white_wins(self):
+        # Set up the game state where White is the winner
+        self.game.board.state.fill(SquareType.WHITE)
+        self.game.update_scores()
+        
+        # End the game
+        self.game.check_finished()
+        self.game.determine_winner()
+        
+        # Assert White is the winner
+        self.assertEqual(self.game.game_result, "White", \
+                         "White should be the winner but isn't.")
+        
+        
+    def test_draw(self):
+        # Set up the game state as a draw
+        for row in range(4):
+            for col in range(8):
+                self.game.board.state[row, col] = SquareType.WHITE
+        for row in range(4, 8):
+            for col in range(8):
+                self.game.board.state[row, col] = SquareType.BLACK
+        self.game.update_scores()
+        
+        # End the game
+        self.game.check_finished()
+        self.game.determine_winner()
+        
+        # Assert the game is a draw
+        self.assertEqual(self.game.game_result, "Draw", \
+                         "The game should be a draw but isn't.")
+
 
 
 
@@ -316,6 +349,27 @@ class TestHeuristics(unittest.TestCase):
         evaluation_score = self.evaluator.evaluate(self.game)
         self.assertEqual(evaluation_score, EXPECTED_EVALUATION_SCORE, 
                          "Evaluate function didn't return expected score.")
+        
+
+    def test_evaluate_black_win(self):
+        """
+        Test evaluate function returns +1 for a Black win.
+        """
+        # Set up a winning board state for Black
+        self.game.board.state.fill(SquareType.BLACK)
+        self.game.board.state[0, 0] = SquareType.WHITE 
+
+        # Update scores and check game had finished
+        self.game.update_scores() # i.e. Black wins 63-1
+        self.game.check_finished()
+
+        # Call the evaluate function
+        evaluator = StateEvaluator()
+        evaluation_score = evaluator.evaluate(self.game)
+
+        # Assert that the evaluation function returns +1 for a Black win
+        self.assertEqual(evaluation_score, 1, 
+                         "Evaluate function should return +1 for a Black win.")
         
 
 

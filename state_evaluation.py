@@ -40,29 +40,35 @@ class StateEvaluator:
         """
         Evaluate game state by combining the results of weighted heuristics.
 
+        If the game has finished, assign +1 for Black win, 0 for draw, and -1 
+        for White win. Otherwise, compute the game state's evaluation by 
+        summing the weighted scores of each heuristic.
 
-        Computes the game state's evaluation by summing the weighted scores of 
-        each heuristic in self.weights dictionary. Each heuristic score is 
-        calculated by its method and multiplied by its weight.
+        Args:
+            game (Game): The current game state.
 
         Returns:
-            float: The weighted evaluation of the game state.
+            float: The weighted evaluation of the game state or the value of the
+            terminal state.
         """
-        # Initialize the score to zero.
+        # If terminal state, assign numerical values 
+        if game.is_finished:
+            game.determine_winner()
+            if game.game_result == "Black":
+                return 1
+            elif game.game_result == "Draw":
+                return 0
+            elif game.game_result == "White":
+                return -1
+
+        # If not terminal state, calculate heuristic score
         score = 0.0
-
-        # Iterate through all selected heuristics and weights
         for heuristic_type, weight in self.weights.items():
-            # Find heuristic method in dictionary
             method = self.heuristic_methods.get(heuristic_type)
-
             if method is not None:
-                # Calculate weighted heuristic and add to score.
                 score += weight * method(game)
             else:
-                # Raise error if heuristic method not found in dictionary
                 raise ValueError(f"Can't find {heuristic_type} method.")
-
         return score
 
         
