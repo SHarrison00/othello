@@ -6,6 +6,7 @@ from enum import Enum, auto
 class HeuristicType(Enum):
     DISC_DIFF = auto()
     MOBILITY = auto()
+    CORNERS = auto()
 
 
 class StateEvaluator:
@@ -118,8 +119,25 @@ class StateEvaluator:
     
 
     def count_corners(self, game, disc_color):
-        pass
+        CORNERS = [(0, 0), (0, 7), (7, 0), (7, 7)]
+        count = 0
+        for row, col in CORNERS:
+            if game.board.state[row, col] == disc_color:
+                count += 1
+        return count
 
 
     def corner_heuristic(self, game):
-        pass
+        """
+        Compute the corner control heuristic for the current state of the game. 
+        Corner control is defined as the normalized difference between the
+        number of corners for the MAX (black) player and MIN (white) player.
+        """
+        max_corners = self.count_corners(game, SquareType.BLACK)
+        min_corners = self.count_corners(game, SquareType.WHITE)
+
+        # Avoid division by zero
+        if max_corners + min_corners == 0:
+            return 0
+
+        return (max_corners - min_corners) / (max_corners + min_corners)

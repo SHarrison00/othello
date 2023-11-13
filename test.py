@@ -341,6 +341,47 @@ class TestHeuristics(unittest.TestCase):
                          "Mobility heuristic evaluated incorrectly.")
         
 
+    def test_count_corners(self):
+        """
+        Test the count_corners function for accuracy.
+        """
+        # Setup a board state with specific corners occupied
+        self.game.board.state[0, 0] = SquareType.BLACK
+        self.game.board.state[0, 7] = SquareType.WHITE
+        self.game.board.state[7, 0] = SquareType.EMPTY
+        self.game.board.state[7, 7] = SquareType.BLACK
+
+        # Count corners for both black and white
+        black_corners = self.evaluator.count_corners(self.game, SquareType.BLACK)
+        white_corners = self.evaluator.count_corners(self.game, SquareType.WHITE)
+
+        # Assert that the corner counts are correct
+        self.assertEqual(black_corners, 2, "Incorrect corner count for Black.")
+        self.assertEqual(white_corners, 1, "Incorrect corner count for White.")
+
+    
+    def test_corner_heuristic(self):
+        """
+        Test the corner heuristic function for various board states.
+        """
+        # Set up a board state with specific corners occupied
+        self.game.board.state[0, 0] = SquareType.BLACK
+        self.game.board.state[0, 7] = SquareType.WHITE
+        self.game.board.state[7, 0] = SquareType.EMPTY
+        self.game.board.state[7, 7] = SquareType.BLACK
+
+        # Compute the corner heuristic value
+        corner_heuristic = self.evaluator.corner_heuristic(self.game)
+
+        # Expected value: Black controls 2 corners, White controls 1 corner
+        # Expected heuristic value = (2 - 1) / (2 + 1) = 1/3
+        EXPECTED_VALUE = 1/3
+
+        # Assert that the heuristic value is as expected
+        self.assertAlmostEqual(corner_heuristic, EXPECTED_VALUE, \
+                               msg="Corner heuristic calculated incorrectly.")
+
+
     def test_evaluate(self):
         """
         Test evaluate function with custom weighted combination of heuristics.
