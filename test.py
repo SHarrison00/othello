@@ -495,6 +495,25 @@ class TestMinimax(unittest.TestCase):
             self.assertAlmostEqual(value, EXPECTED_MINIMAX_VALUES[move],
                 msg=f"Minimax value for move {move} expected to be {EXPECTED_MINIMAX_VALUES[move]}, but got {value}.")
 
+
+    def test_get_minimax_move(self):
+        """
+        Test get_minimax_move function retrieves the best move for White 
+        using the Minimax algorithm after Black plays D3.
+        """
+        # Black plays D3 (initial state)
+        simulated_game = self.game.simulate_move((2, 3))
+
+        # Set the depth for White's minimax evaluation
+        simulated_game.player_white.depth = 2
+        best_move_white = simulated_game.player_white.get_minimax_move(simulated_game)
+
+        # Expected best move for White
+        EXPECTED_BEST_MOVE = (2, 2)
+
+        # Assert that the best move is as expected
+        self.assertEqual(best_move_white, EXPECTED_BEST_MOVE,
+                        f"The best minimax move for White expected to be {EXPECTED_BEST_MOVE}, but got {best_move_white}.")
         
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -190,6 +190,13 @@ class Game:
                 return
             row, col = move
 
+        elif self.active.player_type == PlayerType.MINIMAX:
+            move = self.active.get_minimax_move(self)
+            if move is None:
+                return
+            row, col = move
+
+        # Set the next move
         self.next_move = (row, col)
 
 
@@ -270,7 +277,7 @@ class Game:
 
 
     def is_board_full(self):
-        
+
         for row in range(8):
             for col in range(8):
                 cell_state = self.board.state[row, col]

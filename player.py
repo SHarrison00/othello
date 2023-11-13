@@ -80,8 +80,7 @@ class Player:
 
     def minimax(self, game, depth, maximizing_player):
         """
-        Implementation of the Minimax algorithm that calculates the best move 
-        for a given game state.
+        Calculates the Minimax value for a given game state to a given depth. 
 
         Args:
             game (Game): The current state of the game.
@@ -139,7 +138,11 @@ class Player:
             containing a valid move and its associated minimax value.
         """
         moves_with_values = []
-        for move in game.get_valid_moves_by_color(self.disc_color):
+        valid_moves = game.get_valid_moves_by_color(self.disc_color)
+        if not valid_moves:
+            return moves_with_values
+        
+        for move in valid_moves:
             simulated_game = game.simulate_move(move)
 
             # Compute the minimax value
@@ -153,3 +156,28 @@ class Player:
             moves_with_values.append((move, minimax_value))
         return moves_with_values
 
+
+    def get_minimax_move(self, game):
+        """
+        Selects the best move for the player using the Minimax algorithm, i.e.
+        the move with the highest (or lowest) minimax value.
+
+        Args:
+            game (Game): The current game state.
+            depth (int): Depth to which the Minimax algorithm should search.
+
+        Returns:
+            Tuple[int, int]: The row and column of the best move.
+        """
+        evaluated_moves = self.minimax_evaluate_moves(game)
+        if not evaluated_moves:
+            return None
+        
+        if self.disc_color == SquareType.BLACK:
+            # Maximize the minimax value for Black.
+            best_move = max(evaluated_moves, key=lambda item: item[1])[0]
+        else:
+            # Minimize the minimax value for White.
+            best_move = min(evaluated_moves, key=lambda item: item[1])[0]
+
+        return best_move

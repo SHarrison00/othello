@@ -115,3 +115,11 @@ class StateEvaluator:
             return 0
 
         return (max_discs - min_discs) / (max_discs + min_discs)
+    
+
+    def count_corners(self, game, disc_color):
+        pass
+
+
+    def corner_heuristic(self, game):
+        pass
