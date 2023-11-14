@@ -16,16 +16,24 @@
 }
 
 .overlay-content {
+  /* General styles for overlay content */
   background: white;
   padding: 15px;
   border-radius: 8px;
   width: 30%;
-  font-size: 0.8rem;
+  font-size: 1rem; /* General font size */
   text-align: center;
 }
 
+.overlay-content label, 
+.overlay-content select, 
+.overlay-content input {
+  /* Specific styles for form elements */
+  font-size: 1rem; /* Specific font size for form elements */
+}
+
 body {
-  font-family: Courier, monospace;
+  font-family: Helvetica, sans-serif;
   background-color: #f2f2f2;
   font-size: 24px;
 }
@@ -51,7 +59,7 @@ h1 {
 }
 
 .game-board {
-  margin: 0 auto;
+  margin: 50px auto;
   border-collapse: collapse;
 }
 
@@ -83,4 +91,44 @@ h1 {
   background-color: gray;
   border-radius: 50%;
   z-index: 1;
+}
+
+.clickable-box {
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.clickable-box a {
+  text-decoration: none;
+  font-size: 22px;
+  color: #007bff;
+}
+
+.clickable-box:hover {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.clickable-box:hover a {
+  color: white;
+}
+
+#quote {
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.quote-container {
+  margin-top: 120px;
+  margin-left: auto; 
+  margin-right: auto;
+  max-width: 600px;
+  padding: 10px;
+  text-align: center;
+  font-style: italic;
 }

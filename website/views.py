@@ -9,6 +9,7 @@ from flask import (
 
 import pickle
 import logging 
+import random
 logging.basicConfig(level=logging.DEBUG)
 
 from game import Game
@@ -152,3 +153,11 @@ def get_game_state():
         return jsonify(response)
     else:
         return jsonify({'message': 'Game instance not found'})
+    
+
+@views.route('/get_random_quote')
+def get_random_quote():
+    with open('quotes.txt', 'r') as file:
+        quotes = file.readlines()
+    random_quote = random.choice(quotes).strip()
+    return jsonify({"quote": random_quote})

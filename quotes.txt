@@ -1,0 +1,4 @@
+On the strategic depth of Othello: "A minute to learn… a lifetime to master." - Brian Rose.
+A popular strategy for programming computers to play games like Chess or Othello is to "look ahead as far as possible and then evaluate." - Prof. Patrick Winston 
+On commitment and perseverance: "If you're going to try, go all the way. Otherwise, don't even start." - Charles Bukowski
+

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Play Game - My Website{% endblock %}
+{% block title %}OthelloAI{% endblock %}
 
 {% block content %}
   <div class="game-container">
@@ -8,7 +8,7 @@
       <div id="overlay" class="overlay">
         <div class="overlay-content">
           <form id="color-form" method="post">
-            <label for="color">Choose your color:</label>
+            <label for="color">Choose your color:  </label>
             <select name="color" id="color">
               <option value="BLACK">Black</option>
               <option value="WHITE">White</option>
@@ -41,10 +41,36 @@
     </table>
   </div>
 
-  <script>
-    // Define userColor with value passed by form
-    let userColor = "{{ user_color }}";
-  </script>
+  <!-- Hidden HTML element to store the game_started value  -->
+  <div id="game-started" style="display: none;" data-game-started="{{ game_started }}"></div>
 
+  <!-- Quote container, hidden initially -->
+  <div id="quote-container" class="quote-container" style="display: none;">
+    <p id="quote"></p>
+  </div>
+  
+  <script>
+    let userColor = "{{ user_color }}";
+  
+    // Function to fetch and display a random quote
+    function displayRandomQuote() {
+      document.getElementById('quote-container').style.display = 'block';
+      
+      fetch('/get_random_quote')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('quote').textContent = data.quote;
+        });
+    }
+  
+    let gameStarted = document.getElementById('game-started').dataset.gameStarted === 'True';
+    
+    if (gameStarted) {
+      displayRandomQuote();
+    }
+  
+    document.getElementById('color-form').addEventListener('submit', displayRandomQuote);
+  </script>
+  
   <script src="{{url_for('static', filename='game.js')}}"></script>
 {% endblock %}
