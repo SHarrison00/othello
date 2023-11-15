@@ -55,11 +55,11 @@ class StateEvaluator:
         # If terminal state, assign numerical values 
         if game.is_finished:
             game.determine_winner()
-            if game.game_result == "Black":
+            if game.game_result == "Black Wins":
                 return 1
             elif game.game_result == "Draw":
                 return 0
-            elif game.game_result == "White":
+            elif game.game_result == "White Wins":
                 return -1
 
         # If not terminal state, calculate heuristic score

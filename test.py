@@ -178,7 +178,7 @@ class TestGame(unittest.TestCase):
         self.game.determine_winner()
         
         # Assert White is the winner
-        self.assertEqual(self.game.game_result, "White", \
+        self.assertEqual(self.game.game_result, "White Wins", \
                          "White should be the winner but isn't.")
         
         

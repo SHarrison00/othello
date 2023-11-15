@@ -10,6 +10,7 @@ from flask import (
 import pickle
 import logging 
 import random
+import numpy as np
 logging.basicConfig(level=logging.DEBUG)
 
 from game import Game
@@ -87,25 +88,25 @@ def user_move():
         game = pickle.loads(serialized_game)
 
         # User's move, and game-flow mechanics
-        game.next_move = (row, col) # Bespoke for front-end
+        game.next_move = (row, col)  # Bespoke for front-end
         game.make_move()
         game.change_turn()
         game.update_valid_moves()
+        game.update_scores()
         game.check_finished()
 
         # Update serialized game instance in the session
         session['game_instance'] = pickle.dumps(game)
 
-        # If game has ended, include in response to frontend
-        if game.is_finished:
-            response = {'message': 'Game over', 'game_over': True}
-        else:
-            response = {'message': 'User move received', 'game_over': False}
+        response = {
+            'message': 'User move received',
+            'game_over': game.is_finished
+        }
 
         return jsonify(response)
     else:
         return jsonify({'message': 'Game instance not found'})
-    
+        
 
 @views.route('/agent_move', methods=['POST'])
 def agent_move():
@@ -115,22 +116,37 @@ def agent_move():
         # Deserialize the game instance
         game = pickle.loads(serialized_game)
 
-        # Agent's move, and game-flow mechanics
-        game.get_player_move()
-        game.make_move()
+        if game.active.player_type == PlayerType.USER:
+            game.change_turn()
+
+        # Check if AI has valid moves
+        game.update_valid_moves()
+        valid_moves = game.is_valid_moves()
+
+        if valid_moves:
+            # AI has valid moves
+            game.get_player_move()
+            game.make_move()
+            agent_moved = True
+        else:
+            agent_moved = False
+
         game.change_turn()
         game.update_valid_moves()
+        game.update_scores()
         game.check_finished()
 
-        # Update serialized game instance in the session
+        # Check if User has any valid moves
+        user_has_moves = game.is_valid_moves()
+
         session['game_instance'] = pickle.dumps(game)
 
-        # If game has ended, include in response to frontend
-        if game.is_finished:
-            response = {'message': 'Game over', 'game_over': True}
-        else:
-            response = {'message': 'Agent move received', 'game_over': False}
-
+        response = {
+            'message': 'Agent move received' if agent_moved else 'No valid move for agent',
+            'game_over': game.is_finished,
+            'agent_moved': agent_moved,
+            'user_has_moves': user_has_moves
+        }
         return jsonify(response)
     else:
         return jsonify({'message': 'Game instance not found'})
@@ -148,6 +164,9 @@ def get_game_state():
         # to make it serializable for JSON response.
         game_state = [[cell.name for cell in row] for row in game.board.state]
 
+        print("Call to /get_game_state endpoint")
+        game.board.display()
+
         # Create a dictionary with the game state
         response = {'game_state': game_state}
         return jsonify(response)
@@ -161,3 +180,17 @@ def get_random_quote():
         quotes = file.readlines()
     random_quote = random.choice(quotes).strip()
     return jsonify({"quote": random_quote})
+
+
+@views.route('/get_game_outcome')
+def get_game_outcome():
+    serialized_game = session.get('game_instance')
+
+    if serialized_game:
+        game = pickle.loads(serialized_game)
+        game.determine_winner()
+
+        outcome_message = f"Game over. {game.game_result}. Score: Black {game.black_score} - White {game.white_score}"
+        return jsonify({"outcome_message": outcome_message})
+    else:
+        return jsonify({"outcome_message": "Game instance not found"})

@@ -175,12 +175,19 @@ class Game:
             row, col = move
             self.board.state[row, col] = SquareType.VALID
 
+
+    def is_valid_moves(self):
+        return any(
+            cell == SquareType.VALID 
+            for row in self.board.state 
+            for cell in row
+        )    
     
+
     def get_player_move(self):
         """
         Retrieve player's move by identifying player type.
         """
-
         if self.active.player_type == PlayerType.OFFLINE:
             row, col = self.active.get_offline_move(self)
 
@@ -267,6 +274,7 @@ class Game:
 
         # Place chosen disc
         row, col = self.next_move[0], self.next_move[1]
+
         self.board.state[row, col] = self.active.disc_color
         
         # Flip other discs
@@ -302,6 +310,11 @@ class Game:
             self.is_finished = True
             self.determine_winner()
 
+        # Game ends if one player has no discs
+        elif self.black_score == 0 or self.white_score == 0:
+            self.is_finished = True
+            self.determine_winner()
+
     
     def determine_winner(self):
         """
@@ -310,9 +323,9 @@ class Game:
         player, or marks it as a draw.
         """
         if self.black_score > self.white_score:
-            self.game_result = "Black"
+            self.game_result = "Black Wins"
         elif self.white_score > self.black_score:
-            self.game_result = "White"
+            self.game_result = "White Wins"
         else:
             self.game_result = "Draw"
 

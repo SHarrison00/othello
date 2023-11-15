@@ -36,13 +36,30 @@ function updateGameBoard() {
     });
 }
 
-// Click event handler for User's move
+function displayMessage(message) {
+  const messageBox = document.getElementById('message-box');
+  messageBox.textContent = message;
+  messageBox.style.visibility = 'visible';
+}
+
+function fetchAndDisplayGameOutcome() {
+  fetch('/get_game_outcome')
+    .then(response => response.json())
+    .then(data => {
+      displayMessage(data.outcome_message);
+    })
+    .catch(error => console.error('Error fetching game outcome:', error));
+}
+
 function handleUserMove(event) {
   const tdElement = event.target.closest('.cell');
 
   if (tdElement) {
     const row = parseInt(tdElement.dataset.row);
     const col = parseInt(tdElement.dataset.col);
+
+    // Hide any previously displayed message
+    document.getElementById('message-box').style.visibility = 'hidden';
 
     // AJAX request to backend for User's move
     fetch('/user_move', {
@@ -56,8 +73,12 @@ function handleUserMove(event) {
       .then(data => {
         console.log('Response from backend:', data);
         updateGameBoard();
-        // Only proceed to Agent's move if game not over
-        if (!data.game_over) {
+
+        if (data.game_over) {
+          // Fetch/display outcome if game over
+          fetchAndDisplayGameOutcome();
+        } else {
+          // Request Agent's move if game not over
           handleAgentMove();
         }
       })
@@ -70,30 +91,54 @@ function handleUserMove(event) {
 }
 
 function handleAgentMove() {
-  // Hide valid moves for agent
-  validMovesVisible = false;
+  validMovesVisible = false; // Initially hide valid moves
 
-  // Introduce 1.5s delay
   setTimeout(() => {
-    // AJAX request to backend for Agent's move
     fetch('/agent_move', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Response from backend:', data);
-        updateGameBoard();
+    .then(response => response.json())
+    .then(data => {
+      console.log('Response from backend:', data);
+      updateGameBoard(); // Update the game board with the new state
 
-        // Turn back-on valid moves for user
-        validMovesVisible = true;
-      })
-      .catch(agentError => {
-        console.error('Agent Error:', agentError);
-      });
-  }, 1500); // 1.5s delay
+      if (data.game_over) {
+        // If the game is over, fetch and display the game outcome
+        fetchAndDisplayGameOutcome();
+      } else {
+        if (data.agent_moved) {
+          // If the agent (AI) made a move
+          if (data.user_has_moves) {
+            // If the user has valid moves, show them and hide the message box
+            validMovesVisible = true;
+            document.getElementById('message-box').style.visibility = 'hidden';
+          } else {
+            // If the user has no valid moves, inform them and let AI move again
+            console.log("User has no valid moves, AI's turn again.");
+            displayMessage("You have no valid moves. OthelloAI's turn.");
+            setTimeout(handleAgentMove, 2000); // Schedule AI to move again after a delay
+          }
+        } else {
+          // If the agent (AI) had no valid move
+          if (!data.user_has_moves) {
+            // If the user also has no valid moves, the game is effectively over
+            console.log("Neither AI nor user has valid moves. Game over.");
+            fetchAndDisplayGameOutcome(); // Fetch and display the game outcome
+          } else {
+            // If the user has valid moves, it's the user's turn
+            console.log("Agent had no valid move, user's turn again.");
+            displayMessage("OthelloAI has no valid moves. Your turn.");
+            validMovesVisible = true; // Enable showing valid moves for the user
+            updateGameBoard(); // Update the game board for the user's turn
+          }
+        }
+      }
+    })
+    .catch(agentError => {
+      console.error('Agent Error:', agentError);
+    });
+  }, 2000); // Delay for AI's response
 }
 
 document.addEventListener('DOMContentLoaded', function () {

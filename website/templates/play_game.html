@@ -41,20 +41,19 @@
     </table>
   </div>
 
-  <!-- Hidden HTML element to store the game_started value  -->
-  <div id="game-started" style="display: none;" data-game-started="{{ game_started }}"></div>
+  <div id="message-box" class="message-box" style="visibility: hidden;"></div>
 
-  <!-- Quote container, hidden initially -->
-  <div id="quote-container" class="quote-container" style="display: none;">
+  <div id="quote-container" class="quote-container" style="visibility: hidden;">
     <p id="quote"></p>
   </div>
-  
+
+  <div id="game-started" style="display: none;" data-game-started="{{ game_started }}"></div>
+
   <script>
     let userColor = "{{ user_color }}";
   
-    // Function to fetch and display a random quote
     function displayRandomQuote() {
-      document.getElementById('quote-container').style.display = 'block';
+      document.getElementById('quote-container').style.visibility = 'visible';
       
       fetch('/get_random_quote')
         .then(response => response.json())

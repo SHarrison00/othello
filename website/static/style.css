@@ -123,7 +123,7 @@ h1 {
   font-size: 0.9rem;
 }
 
-.quote-container {
+/* .quote-container {
   margin-top: 120px;
   margin-left: auto; 
   margin-right: auto;
@@ -132,3 +132,32 @@ h1 {
   text-align: center;
   font-style: italic;
 }
+
+.message-box {
+  margin-top: 20px;
+  color: #FF0000; 
+  text-align: center;
+} */
+
+.quote-container {
+  position: fixed;
+  bottom: 40px; /* Position from the bottom */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
+  max-width: 600px;
+  padding: 10px;
+  text-align: center;
+  font-style: italic;
+  /* Rest of your styles... */
+}
+
+.message-box {
+  height: 50px; /* Fixed height to reserve space */
+  visibility: hidden; /* Hide it initially but reserve space */
+  /* Rest of your styles... */
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #555;
+}
+
