@@ -7,15 +7,17 @@ from flask import (
     jsonify, session, redirect, url_for
 )
 
+import os 
+
 import pickle
 import logging 
 import random
 import numpy as np
 logging.basicConfig(level=logging.DEBUG)
 
-from game import Game
-from board import SquareType
-from player import Player, PlayerType
+from src.game import Game
+from src.board import SquareType
+from src.player import Player, PlayerType
 
 views = Blueprint("views", __name__)
 
@@ -164,9 +166,6 @@ def get_game_state():
         # to make it serializable for JSON response.
         game_state = [[cell.name for cell in row] for row in game.board.state]
 
-        print("Call to /get_game_state endpoint")
-        game.board.display()
-
         # Create a dictionary with the game state
         response = {'game_state': game_state}
         return jsonify(response)
@@ -176,7 +175,10 @@ def get_game_state():
 
 @views.route('/get_random_quote')
 def get_random_quote():
-    with open('quotes.txt', 'r') as file:
+
+    print(os.path.dirname(__file__))
+
+    with open('data/quotes.txt', 'r') as file:
         quotes = file.readlines()
     random_quote = random.choice(quotes).strip()
     return jsonify({"quote": random_quote})
