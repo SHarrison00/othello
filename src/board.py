@@ -29,7 +29,7 @@ class Board:
 
     def display(self):
         """
-        Simple function to display the board state. 
+        Simple function to display the board state in the console.
         """
 
         board_repr = np.array([
