@@ -1,9 +1,9 @@
 
 import numpy as np
 import copy
-from .board import Board
-from .board import SquareType
-from .player import Player, PlayerType
+from board import Board
+from board import SquareType
+from player import Player, PlayerType
 
 class Game:
     """

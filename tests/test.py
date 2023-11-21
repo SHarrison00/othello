@@ -1,10 +1,18 @@
 
+import os
+import sys
+
+# Calculate path to src directory, and append to sys.path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+sys.path.append(os.path.join(project_root, 'src'))
+
 import unittest
 import numpy as np
-from src.game import Game
-from src.board import Board, SquareType
-from src.player import Player, PlayerType
-from src.state_evaluation import StateEvaluator, HeuristicType
+from game import Game
+from board import Board, SquareType
+from player import Player, PlayerType
+from state_evaluation import StateEvaluator, HeuristicType
 
 class TestGame(unittest.TestCase):
     """

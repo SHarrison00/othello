@@ -1,8 +1,8 @@
 
 import random
 from enum import Enum
-from .board import SquareType
-from .state_evaluation import StateEvaluator
+from board import SquareType
+from state_evaluation import StateEvaluator
 
 class PlayerType(Enum):
     USER = 'user'

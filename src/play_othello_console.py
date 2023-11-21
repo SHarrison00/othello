@@ -1,7 +1,7 @@
 
 import time
-from .game import Game
-from .player import PlayerType
+from game import Game
+from player import PlayerType
 
 # Ask the user to choose their color
 print("Do you want to play as black or white?")
