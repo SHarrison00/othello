@@ -8,4 +8,4 @@
 
 <img src="https://s6.gifyu.com/images/S4YYA.gif" class="centerImage">
 
-- **Link to Blog (Draft):** (https://drive.google.com/file/d/1dmnFcNmXU9iEyKB3HncJ6OFf88GAlfoT/view?usp=sharing)https://drive.google.com/file/d/1dmnFcNmXU9iEyKB3HncJ6OFf88GAlfoT/view?usp=sharing)
+- **Link to Blog (Draft):** https://drive.google.com/file/d/1dmnFcNmXU9iEyKB3HncJ6OFf88GAlfoT/view?usp=sharing)https://drive.google.com/file/d/1dmnFcNmXU9iEyKB3HncJ6OFf88GAlfoT/view?usp=sharing
