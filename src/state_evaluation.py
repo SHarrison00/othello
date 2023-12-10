@@ -22,12 +22,14 @@ class StateEvaluator:
         self.heuristic_methods = {
             HeuristicType.DISC_DIFF: self.disc_diff_heuristic,
             HeuristicType.MOBILITY: self.mobility_heuristic,
+            HeuristicType.CORNERS: self.corner_heuristic,
         }
 
         # Default weights, if not provided
         default_weights = {
             HeuristicType.DISC_DIFF: 0.5,
-            HeuristicType.MOBILITY: 0.5
+            HeuristicType.MOBILITY: 0.5,
+            HeuristicType.CORNERS: 0
         }
 
         self.weights = weights if weights else default_weights

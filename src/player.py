@@ -170,6 +170,7 @@ class Player:
             Tuple[int, int]: The row and column of the best move.
         """
         evaluated_moves = self.minimax_evaluate_moves(game)
+
         if not evaluated_moves:
             return None
         

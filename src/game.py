@@ -188,18 +188,23 @@ class Game:
         """
         Retrieve player's move by identifying player type.
         """
+        # Update history
+        self.prev_move = self.next_move
+
         if self.active.player_type == PlayerType.OFFLINE:
             row, col = self.active.get_offline_move(self)
 
         elif self.active.player_type == PlayerType.RANDOM:
             move = self.active.get_random_move(self)
             if move is None:
+                self.next_move = None
                 return
             row, col = move
 
         elif self.active.player_type == PlayerType.MINIMAX:
             move = self.active.get_minimax_move(self)
             if move is None:
+                self.next_move = None
                 return
             row, col = move
 
@@ -270,6 +275,7 @@ class Game:
         """
 
         if self.next_move is None:
+            # self.prev_move = self.next_move
             return
 
         # Place chosen disc
@@ -280,8 +286,8 @@ class Game:
         # Flip other discs
         self.flip() 
 
-        # Update history
-        self.prev_move = self.next_move
+        # # Update history
+        # self.prev_move = self.next_move
 
 
     def is_board_full(self):

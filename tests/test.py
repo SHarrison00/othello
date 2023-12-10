@@ -217,8 +217,8 @@ class TestPlayer(unittest.TestCase):
     def test_state_evaluator_integration_with_player(self):
         # Initialize a StateEvaluator with custom weights
         custom_weights = {
-            "disc_diff": 0.7,
-            "mobility": 0.3
+            HeuristicType.DISC_DIFF: 0.7,
+            HeuristicType.MOBILITY: 0.3
         }
         state_evaluator = StateEvaluator(weights=custom_weights)
         
