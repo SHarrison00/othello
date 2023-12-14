@@ -1,7 +1,7 @@
 
 import numpy as np
 from enum import Enum, auto
-from board import SquareType
+from .board import SquareType
 
 class HeuristicType(Enum):
     DISC_DIFF = auto()

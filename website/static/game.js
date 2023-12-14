@@ -91,7 +91,10 @@ function handleUserMove(event) {
 }
 
 function handleAgentMove() {
-  validMovesVisible = false; // Initially hide valid moves
+  // Initially hide valid moves
+  validMovesVisible = false; 
+
+  displayMessage("OthelloAI is thinking...");
 
   setTimeout(() => {
     fetch('/agent_move', {
@@ -101,36 +104,42 @@ function handleAgentMove() {
     .then(response => response.json())
     .then(data => {
       console.log('Response from backend:', data);
-      updateGameBoard(); // Update the game board with the new state
+      updateGameBoard();
 
       if (data.game_over) {
-        // If the game is over, fetch and display the game outcome
+        // Fetch and display the game outcome
         fetchAndDisplayGameOutcome();
       } else {
         if (data.agent_moved) {
-          // If the agent (AI) made a move
+          // If OthelloAI made a move
           if (data.user_has_moves) {
-            // If the user has valid moves, show them and hide the message box
+            // If user has valid moves
             validMovesVisible = true;
             document.getElementById('message-box').style.visibility = 'hidden';
           } else {
-            // If the user has no valid moves, inform them and let AI move again
+            // If user has no valid moves
             console.log("User has no valid moves, AI's turn again.");
             displayMessage("You have no valid moves. OthelloAI's turn.");
-            setTimeout(handleAgentMove, 2000); // Schedule AI to move again after a delay
+
+            // Schedule AI to move again after a delay
+            setTimeout(handleAgentMove, 2000);
           }
         } else {
-          // If the agent (AI) had no valid move
+          // If OthelloAI had no valid moves
           if (!data.user_has_moves) {
-            // If the user also has no valid moves, the game is effectively over
+            // If user also has no valid moves
             console.log("Neither AI nor user has valid moves. Game over.");
-            fetchAndDisplayGameOutcome(); // Fetch and display the game outcome
+
+            // Fetch and display the game outcome
+            fetchAndDisplayGameOutcome();
           } else {
-            // If the user has valid moves, it's the user's turn
+            // If user has valid moves
             console.log("Agent had no valid move, user's turn again.");
             displayMessage("OthelloAI has no valid moves. Your turn.");
-            validMovesVisible = true; // Enable showing valid moves for the user
-            updateGameBoard(); // Update the game board for the user's turn
+
+            // Show valid moves for  user
+            validMovesVisible = true;
+            updateGameBoard();
           }
         }
       }
@@ -138,7 +147,8 @@ function handleAgentMove() {
     .catch(agentError => {
       console.error('Agent Error:', agentError);
     });
-  }, 2000); // Delay for AI's response
+  // Delay for AI's response
+  }, 2000);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
