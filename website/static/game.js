@@ -94,7 +94,7 @@ function handleAgentMove() {
   // Initially hide valid moves
   validMovesVisible = false; 
 
-  displayMessage("OthelloAI is thinking...");
+  displayMessage("OthelloAI is analysing...");
 
   setTimeout(() => {
     fetch('/agent_move', {
