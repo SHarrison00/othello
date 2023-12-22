@@ -120,6 +120,9 @@ class Game:
         original_active = self.active
         original_inactive = self.inactive
 
+        # print(f'original_active: {original_active}')
+        # print(f'original_inactive: {original_inactive}')
+
         # Set the active player based on the specified color
         if color == SquareType.BLACK:
             self.active = self.player_black
@@ -200,7 +203,7 @@ class Game:
                 return
             row, col = move
 
-        elif self.active.player_type == PlayerType.MINIMAX:
+        elif self.active.player_type == PlayerType.MINIMAX:            
             move = self.active.get_minimax_move(self)
             if move is None:
                 self.next_move = None
@@ -274,7 +277,6 @@ class Game:
         """
 
         if self.next_move is None:
-            # self.prev_move = self.next_move
             return
 
         # Place chosen disc
@@ -283,11 +285,8 @@ class Game:
         self.board.state[row, col] = self.active.disc_color
         
         # Flip other discs
-        self.flip() 
-
-        # # Update history
-        # self.prev_move = self.next_move
-
+        self.flip()
+        
 
     def is_board_full(self):
 

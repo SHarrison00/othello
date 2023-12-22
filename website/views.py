@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.DEBUG)
 from src.game import Game
 from src.board import SquareType
 from src.player import Player, PlayerType
+from src.state_evaluation import StateEvaluator, HeuristicType
 
 views = Blueprint("views", __name__)
 
@@ -40,17 +41,23 @@ def play_game():
         # redirect to the same endpoint to handle the GET request.
         color = request.form.get('color')
         session['user_color'] = color
-        
+
+        # OthelloAI evaluation function weights
+        state_eval = StateEvaluator(weights={
+            HeuristicType.DISC_DIFF: 25/60,
+            HeuristicType.MOBILITY: 5/60,
+            HeuristicType.CORNERS: 30/60
+        })
+    
         # Create Player instances based on the selected color
         if color == 'BLACK':
             user_player = Player(PlayerType.USER, SquareType.BLACK)
-            ai_player = Player(PlayerType.RANDOM, SquareType.WHITE)
+            ai_player = Player(PlayerType.MINIMAX, SquareType.WHITE, state_eval, 3)
+            game = Game(user_player, ai_player)
         else:
             user_player = Player(PlayerType.USER, SquareType.WHITE)
-            ai_player = Player(PlayerType.RANDOM, SquareType.BLACK)
-        
-        # Initialize the game with the created player instances
-        game = Game(user_player, ai_player)
+            ai_player = Player(PlayerType.MINIMAX, SquareType.BLACK, state_eval, 3)
+            game = Game(ai_player, user_player)
         
         serialized_game = pickle.dumps(game)
         session['game_instance'] = serialized_game

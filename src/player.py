@@ -138,7 +138,9 @@ class Player:
             containing a valid move and its associated minimax value.
         """
         moves_with_values = []
+
         valid_moves = game.get_valid_moves_by_color(self.disc_color)
+
         if not valid_moves:
             return moves_with_values
         
