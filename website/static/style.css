@@ -161,3 +161,9 @@ h1 {
   color: #555;
 }
 
+.color-selection-message {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 0.7em;
+  color: #555; /* Choose a color that fits your website's theme */
+}

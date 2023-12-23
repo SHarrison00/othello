@@ -3,6 +3,8 @@
 {% block title %}OthelloAI{% endblock %}
 
 {% block content %}
+  <div id="color-selection-message" class="color-selection-message" style="visibility: hidden;"></div>
+
   <div class="game-container">
     {% if not game_started %}
       <div id="overlay" class="overlay">
@@ -60,6 +62,10 @@
         .then(data => {
           document.getElementById('quote').textContent = data.quote;
         });
+
+      let colorMessage = `You are playing as <strong>${userColor}</strong>.<br>Aim to control more discs than OthelloAI.`;
+      document.getElementById('color-selection-message').innerHTML = colorMessage; // Use innerHTML instead of textContent
+      document.getElementById('color-selection-message').style.visibility = 'visible';
     }
   
     let gameStarted = document.getElementById('game-started').dataset.gameStarted === 'True';
