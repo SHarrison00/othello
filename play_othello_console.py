@@ -1,23 +1,27 @@
 
 import time
-from game import Game
-from player import PlayerType
+from src.game import Game
+from src.player import Player, PlayerType
+from src.board import SquareType
 
-# Ask the user to choose their color
+# Ask offline user to choose their color
 print("Do you want to play as black or white?")
 color = input("Enter: ").lower()
 while color not in ['black', 'white']:
     print("Do you want to play as black or white?")
     color = input("Enter: ").lower()
 
-# Initialize game instance
 if color == 'black':
-    game = Game(PlayerType.OFFLINE, PlayerType.RANDOM)
+    player_black = Player(PlayerType.OFFLINE, SquareType.BLACK)
+    player_white = Player(PlayerType.RANDOM, SquareType.WHITE)
 else:
-    game = Game(PlayerType.RANDOM, PlayerType.OFFLINE)
+    player_black = Player(PlayerType.RANDOM, SquareType.BLACK)
+    player_white = Player(PlayerType.OFFLINE, SquareType.WHITE)
+
+# Initialise game
+game = Game(player_black, player_white)
 
 while not game.is_finished:
-    # Display the board
     print("\n\n")
     game.board.display()
     time.sleep(1.5)
@@ -33,21 +37,16 @@ while not game.is_finished:
             time.sleep(1)
         print("White to move.")
 
-    # Get the player's move and make it
     time.sleep(1)
     game.get_player_move()
     game.make_move()
-
-    # Change turns and update game info
     game.change_turn()
     game.update_valid_moves()
     game.update_scores()
 
-    # Before carrying on, check game has not ended
     game.check_finished()
     time.sleep(1.5)
 
 # Display final game board
 game.board.display()
-# Message to acknowledge end of game 
 print("Game over.")
