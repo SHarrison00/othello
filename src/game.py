@@ -14,7 +14,6 @@ class Game:
         self.board = Board()
         self.is_finished = False
 
-        # Directly assign the provided Player instances
         self.player_black = player_black
         self.player_white = player_white
 
@@ -22,11 +21,10 @@ class Game:
         self.active = self.player_black
         self.inactive = self.player_white
 
-        # Move history
         self.next_move = None
         self.prev_move = None
 
-        # Scores, and winner
+        # Scoring and winner
         self.black_score = 2
         self.white_score = 2
         self.game_result = None
@@ -43,22 +41,16 @@ class Game:
 
     def is_valid_move(self, row, col):
         """
-        Checks the validity of a move. Involves traversing in different 
-        directions on the board, and checking the traversed sequence of discs.
-
-        Args:
-            row (int): The row coordinate of the move.
-            col (int): The column coordinate of the move.
+        Check the validity of a move. This involves traversing in different 
+        directions on the board and checking the traversed sequence of discs.
 
         Returns:
             bool: True if the move is valid, False otherwise.
         """
 
-        # Before doing anything, reset any moves on the board that are still
-        # displayed as valid
+        # First, reset any moves on the board still displayed as valid
         self.reset_valid_moves()
 
-        # Move is invalid if the cell is not empty 
         if self.board.state[row, col] != SquareType.EMPTY:
             return False
 
@@ -66,33 +58,32 @@ class Game:
         DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), 
                       (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-        # Traverse board in specified direction
         for direction in DIRECTIONS:
             d_row, d_col = direction
             r, c = row + d_row, col + d_col
+
             found_opposing_disc = False
             
-            # While within boundaries
+            # While within board boundaries
             while 0 <= r < 8 and 0 <= c < 8:
                 if self.board.state[r, c] == SquareType.EMPTY:
                     break
 
                 if self.board.state[r, c] == self.active.disc_color:
                     if found_opposing_disc:
-                        # Sequence of opponent's (inactive) discs starting/
-                        # ending with player's (active) own discs
+                        # Found sequence of opponent's (inactive player) discs
+                        # starting & ending with active player's own discs
                         return True
                     break
 
                 if self.board.state[r, c] == self.inactive.disc_color:
-                    # Next disc in traversed sequence is found to be opponents
                     found_opposing_disc = True
 
-                # Else traverse one more step
+                # Traverse another step in same direction
                 r += d_row
                 c += d_col
 
-        # No directions yield valid sequence, hence invalid
+        # No directions yield valid sequence, hence must be invalid
         return False
 
 
@@ -101,7 +92,7 @@ class Game:
         Get all valid moves for the current active player in the game.
 
         Returns:
-            list: A list of tuples representing the valid moves (row, col).
+            list: A list of tuples of valid moves (row, col).
         """
 
         return [
@@ -115,15 +106,16 @@ class Game:
     def get_valid_moves_by_color(self, color):
         """
         Get all valid moves for a specified color.
+        
+        Returns:
+            list: A list of tuples of valid moves (row, col).
         """
+
         # Store original active and inactive players
         original_active = self.active
         original_inactive = self.inactive
 
-        # print(f'original_active: {original_active}')
-        # print(f'original_inactive: {original_inactive}')
-
-        # Set the active player based on the specified color
+        # Now, set active player based on input
         if color == SquareType.BLACK:
             self.active = self.player_black
             self.inactive = self.player_white
@@ -140,7 +132,7 @@ class Game:
             if self.is_valid_move(row, col)
         ]
 
-        # Restore the original active and inactive players
+        # Restore original active and inactive players
         self.active = original_active
         self.inactive = original_inactive
 
@@ -172,13 +164,15 @@ class Game:
         if not valid_moves:
             return
         
-        # Update
         for move in valid_moves:
+
+            # Update board state
             row, col = move
             self.board.state[row, col] = SquareType.VALID
 
 
     def is_valid_moves(self):
+
         return any(
             cell == SquareType.VALID 
             for row in self.board.state 
@@ -188,9 +182,10 @@ class Game:
 
     def get_player_move(self):
         """
-        Retrieve player's move by identifying player type.
+        Get active player's move by identifying their player type.
         """
-        # Update history
+
+        # First, update move history
         self.prev_move = self.next_move
 
         if self.active.player_type == PlayerType.OFFLINE:
@@ -216,17 +211,15 @@ class Game:
 
     def discs_to_flip(self, row, col):
         """
-        For a given move, determine the discs that need to be flipped.
+        Determine disc(s) that need to be flipped for a move.
         """
 
-        # Initialize store discs to flip
         discs_to_flip = []
 
         # Traversable DIRECTIONS; up, down, left, right and all diagonals
         DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), 
                       (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-        # Traverse board in specified direction
         for direction in DIRECTIONS:
             d_row, d_col = direction
             r, c = row + d_row, col + d_col
@@ -237,20 +230,22 @@ class Game:
             # Flag to indicate if there exists discs to flip
             flip_flag = False
 
-            # Continue traversing in the current direction
             while 0 <= r < 8 and 0 <= c < 8:
                 if self.board.state[r, c] == self.inactive.disc_color:
+                    # Add the opponent's disc to the sequence
                     seq_discs.append((r, c))
                     flip_flag = True
 
                 elif self.board.state[r, c] == self.active.disc_color:
                     if flip_flag:
+                        # If we encounter our own disc after already 
+                        # encountering opponent's discs, extend discs_to_flip
                         discs_to_flip.extend(seq_discs)
                     break
                 else:
                     break
 
-                # Traverse another step
+                # Traverse another step in same direction
                 r += d_row
                 c += d_col
 
@@ -259,15 +254,15 @@ class Game:
 
     def flip(self):
         """
-        For the next move flip the discs, updating the board.
+        Flip discs for the next move, thereby updating the board state.
         """
 
-        # For next move, identify discs to flip
         row, col = self.next_move[0], self.next_move[1]
         discs = self.discs_to_flip(row, col)
 
-        # Update the board state
         for disc in discs:
+
+            # Update the board state
             self.board.state[disc[0], disc[1]] = self.active.disc_color
 
 
@@ -279,9 +274,8 @@ class Game:
         if self.next_move is None:
             return
 
-        # Place chosen disc
+        # Place disc
         row, col = self.next_move[0], self.next_move[1]
-
         self.board.state[row, col] = self.active.disc_color
         
         # Flip other discs
@@ -295,26 +289,26 @@ class Game:
                 cell_state = self.board.state[row, col]
                 if cell_state in [SquareType.EMPTY, SquareType.VALID]:
                     return False
+        
         return True
     
 
     def check_finished(self):
         """
-        Checks if game has ended based on two conditions: if no further moves 
-        are possible for both players, or if the board is full. If the game is 
-        finished, it determines the winner or declares a draw.
+        Checks if the game has finished and determines the winner.
         """
-        # Game ends if neither player can move
+
+        # Neither player can move
         if self.next_move is None and self.prev_move is None:
             self.is_finished = True
             self.determine_winner()
 
-        # Game ends if the board is full 
+        # The game board board is full 
         elif self.is_board_full():
             self.is_finished = True
             self.determine_winner()
 
-        # Game ends if one player has no discs
+        # One player has no discs
         elif self.black_score == 0 or self.white_score == 0:
             self.is_finished = True
             self.determine_winner()
@@ -322,10 +316,9 @@ class Game:
     
     def determine_winner(self):
         """
-        Determines the winner of the game by comparing the scores of both 
-        players. Sets the game's result attribute to the color of the winning 
-        player, or marks it as a draw.
+        Determines the winner by comparing the scores of both players. 
         """
+
         if self.black_score > self.white_score:
             self.game_result = "Black Wins"
         elif self.white_score > self.black_score:
@@ -336,23 +329,19 @@ class Game:
 
     def simulate_move(self, move):
         """
-        Simulate move in the game by creating a copy of the current game state,
-        applying the move, and returning the new game state.
-
-        Args:
-            move (tuple): Move to be made, represented as a tuple (row, col).
+        Simulate a move by creating a copy of the current game state.
 
         Returns:
             Game: A new game instance with the move applied.
         """
-        # Create a deep copy of the game to avoid altering the original game
+
+        # Create a deep copy of the game
         new_game = copy.deepcopy(self)
 
-        # Apply the move
+        # Apply the input move 
         new_game.next_move = move
         new_game.make_move()
 
-        # Change turns, update valid moves, and scores
         new_game.change_turn()
         new_game.update_valid_moves()
         new_game.update_scores()
@@ -361,5 +350,3 @@ class Game:
         new_game.check_finished()
 
         return new_game
-    
-    
