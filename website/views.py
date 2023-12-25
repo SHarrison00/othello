@@ -1,6 +1,6 @@
 # The purpose of the views.py file is to store the main views or URL endpoints 
-# for the front-end aspect of the website. It contains the code responsible for 
-# handling requests and rendering the appropriate responses to the users.
+# for the front-end. It contains the code responsible for handling requests and
+# rendering responses to the users.
 
 from flask import (
     Blueprint, render_template, request, 
@@ -19,7 +19,7 @@ from src.game import Game
 from src.board import SquareType
 from src.player import Player, PlayerType
 from src.state_evaluation import StateEvaluator, HeuristicType
-
+ 
 views = Blueprint("views", __name__)
 
 
@@ -28,17 +28,9 @@ def home():
     return render_template("home.html")
 
 
-@views.route("/about")
-def about():
-    return render_template('about.html')
-
-
 @views.route('/play_game', methods=['GET', 'POST'])
 def play_game():
     if request.method == 'POST':
-        # Handling POST request: Retrieve the user-selected color, initialize 
-        # the game accordingly store the game state in the session, and 
-        # redirect to the same endpoint to handle the GET request.
         color = request.form.get('color')
         session['user_color'] = color
 
@@ -49,7 +41,6 @@ def play_game():
             HeuristicType.CORNERS: 30/60
         })
     
-        # Create Player instances based on the selected color
         if color == 'BLACK':
             user_player = Player(PlayerType.USER, SquareType.BLACK)
             ai_player = Player(PlayerType.MINIMAX, SquareType.WHITE, state_eval, 3)
@@ -66,8 +57,6 @@ def play_game():
         return redirect(url_for('views.play_game'))
     
     else:
-        # Handle GET request: Retrieve color and game instance from session, 
-        # deserialize if exists, and render. Else, create default game instance
         color = session.get('user_color')
         serialized_game = session.get('game_instance')
         
@@ -85,6 +74,7 @@ def play_game():
 
 @views.route('/user_move', methods=['POST'])
 def user_move():
+    # Move data from the JSON request
     data = request.get_json()
     row = data['row']
     col = data['col']
@@ -92,19 +82,17 @@ def user_move():
     serialized_game = session.get('game_instance')
     
     if serialized_game:
-        # Deserialize the game instance
         logging.debug(f"Received move: row={row}, col={col}")
         game = pickle.loads(serialized_game)
 
-        # User's move, and game-flow mechanics
-        game.next_move = (row, col)  # Bespoke for front-end
+        game.next_move = (row, col)
         game.make_move()
         game.change_turn()
         game.update_valid_moves()
         game.update_scores()
         game.check_finished()
 
-        # Update serialized game instance in the session
+        # Update serialized game instance
         session['game_instance'] = pickle.dumps(game)
 
         response = {
@@ -122,18 +110,16 @@ def agent_move():
     serialized_game = session.get('game_instance')
     
     if serialized_game:
-        # Deserialize the game instance
         game = pickle.loads(serialized_game)
 
         if game.active.player_type == PlayerType.USER:
             game.change_turn()
 
-        # Check if AI has valid moves
+        # Check AI has valid moves
         game.update_valid_moves()
         valid_moves = game.is_valid_moves()
 
         if valid_moves:
-            # AI has valid moves
             game.get_player_move()
             game.make_move()
             agent_moved = True
@@ -145,7 +131,7 @@ def agent_move():
         game.update_scores()
         game.check_finished()
 
-        # Check if User has any valid moves
+        # Check User has valid moves
         user_has_moves = game.is_valid_moves()
 
         session['game_instance'] = pickle.dumps(game)
@@ -166,16 +152,15 @@ def get_game_state():
     serialized_game = session.get('game_instance')
     
     if serialized_game:
-        # Deserialize the game instance
         game = pickle.loads(serialized_game)
 
-        # Convert the game state to a list of lists with string representations
-        # to make it serializable for JSON response.
+        # Convert game state to a list of lists JSON serialisation
         game_state = [[cell.name for cell in row] for row in game.board.state]
 
-        # Create a dictionary with the game state
         response = {'game_state': game_state}
+        
         return jsonify(response)
+    
     else:
         return jsonify({'message': 'Game instance not found'})
     
@@ -188,6 +173,7 @@ def get_random_quote():
     with open('data/quotes.txt', 'r') as file:
         quotes = file.readlines()
     random_quote = random.choice(quotes).strip()
+
     return jsonify({"quote": random_quote})
 
 
@@ -201,5 +187,6 @@ def get_game_outcome():
 
         outcome_message = f"Game over. {game.game_result}. Score: Black {game.black_score} - White {game.white_score}"
         return jsonify({"outcome_message": outcome_message})
+    
     else:
         return jsonify({"outcome_message": "Game instance not found"})
