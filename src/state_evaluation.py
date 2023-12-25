@@ -11,12 +11,12 @@ class HeuristicType(Enum):
 
 class StateEvaluator:
     """
-    Evaluates game states using combination of weighted heuristic components.
+    State evaluation using a weighted combination of heuristic components.
     """
 
     def __init__(self, weights=None):
         """
-        Initialises the evaluator with specified weights for each heuristic.
+        Initialises the evaluator with specified heuristic weights.
         """
 
         self.heuristic_methods = {
@@ -41,20 +41,16 @@ class StateEvaluator:
         
     def evaluate(self, game):
         """
-        Evaluate game state by combining the results of weighted heuristics.
-
-        If the game has finished, assign +1 for Black win, 0 for draw, and -1 
-        for White win. Otherwise, compute the game state's evaluation by 
-        summing the weighted scores of each heuristic.
-
-        Args:
-            game (Game): The current game state.
+        Evaluate a game state using a weighted combination of heuristics.
+ 
+        If the game has ended, assign +1 for Black win, and and -1 for White 
+        win. Otherwise, evaluate using weighted heuristic components.
 
         Returns:
-            float: The weighted evaluation of the game state or the value of the
-            terminal state.
+            float: The value of the game state or terminal state.
         """
-        # If terminal state, assign numerical values 
+
+        # If terminal state
         if game.is_finished:
             game.determine_winner()
             if game.game_result == "Black Wins":
@@ -64,7 +60,7 @@ class StateEvaluator:
             elif game.game_result == "White Wins":
                 return -1
 
-        # If not terminal state, calculate heuristic score
+        # If not terminal state
         score = 0.0
         for heuristic_type, weight in self.weights.items():
             method = self.heuristic_methods.get(heuristic_type)
@@ -72,6 +68,7 @@ class StateEvaluator:
                 score += weight * method(game)
             else:
                 raise ValueError(f"Can't find {heuristic_type} method.")
+            
         return score
 
         
@@ -82,9 +79,8 @@ class StateEvaluator:
     def mobility_heuristic(self, game):
         """
         Compute the mobility heuristic for the current state of the game. 
-        Mobility is defined as the normalized difference between the number of 
-        valid moves for the MAX (black) player and the MIN (white) player.
         """
+
         max_moves = self.count_valid_moves(game, SquareType.BLACK)
         min_moves = self.count_valid_moves(game, SquareType.WHITE)
 
@@ -107,9 +103,8 @@ class StateEvaluator:
     def disc_diff_heuristic(self, game):
         """
         Compute the disc difference heuristic for current state of the game.
-        Disc difference is defined as the normalized difference between the
-        number of discs for the MAX (black) player and the MIN (white) player.
         """
+
         max_discs = self.count_discs(game, SquareType.BLACK)
         min_discs = self.count_discs(game, SquareType.WHITE)
 
@@ -121,20 +116,21 @@ class StateEvaluator:
     
 
     def count_corners(self, game, disc_color):
+
         CORNERS = [(0, 0), (0, 7), (7, 0), (7, 7)]
         count = 0
         for row, col in CORNERS:
             if game.board.state[row, col] == disc_color:
                 count += 1
+
         return count
 
 
     def corner_heuristic(self, game):
         """
         Compute the corner control heuristic for the current state of the game. 
-        Corner control is defined as the normalized difference between the
-        number of corners for the MAX (black) player and MIN (white) player.
         """
+        
         max_corners = self.count_corners(game, SquareType.BLACK)
         min_corners = self.count_corners(game, SquareType.WHITE)
 
