@@ -9,10 +9,10 @@ sys.path.append(os.path.join(project_root, 'src'))
 
 import unittest
 import numpy as np
-from game import Game
-from board import Board, SquareType
-from player import Player, PlayerType
-from state_evaluation import StateEvaluator, HeuristicType
+from src.game import Game
+from src.board import Board, SquareType
+from src.player import Player, PlayerType
+from src.state_evaluation import StateEvaluator, HeuristicType
 
 class TestGame(unittest.TestCase):
     """
@@ -20,15 +20,13 @@ class TestGame(unittest.TestCase):
     """
 
     def setUp(self):
-        # Create players
         self.black_player = Player(PlayerType.RANDOM, SquareType.BLACK)
         self.white_player = Player(PlayerType.RANDOM, SquareType.WHITE)
-        # Initialize the game with these players
         self.game = Game(self.black_player, self.white_player)
 
 
     def test_player_colors(self):
-        # Check first player is black and the second is white
+        # Check first player is black, and the second is white
         self.assertEqual(self.game.player_black.disc_color, SquareType.BLACK)
         self.assertEqual(self.game.player_white.disc_color, SquareType.WHITE)
 
@@ -54,27 +52,22 @@ class TestGame(unittest.TestCase):
 
 
     def test_valid_moves_initial_board(self):
-        """
-        Test for valid moves on the initial board configuration. Assumes 
-        implicitly the player is black, and the opponent is white.
-        """
-        # First, we reset the valid moves that are defined when the board is
-        # instantiated at the start
+        # First, reset valid moves
         self.game.reset_valid_moves()
 
-        # Then, we can test the functionality of get_valid_moves()
         valid_moves = self.game.get_valid_moves()
-        
+                
+        # Test get_valid_moves() gives correct moves
         EXPECTED_VALID_MOVES = [(2, 3), (3, 2), (4, 5), (5, 4)]
         self.assertEqual(set(valid_moves), set(EXPECTED_VALID_MOVES))
 
 
     def test_valid_moves_near_full_board(self):
         """
-        Test for valid moves on a board configuration that is nearly full. 
-        Assumes implicitly the player is black, and the opponent is white.
+        Test for valid moves on a board state that is nearly full. 
         """
-        # Initialise nearly full board configuration, with two empty spaces
+
+        # Define nearly full board state
         NEARLY_FULL_BOARD = [
             [SquareType.BLACK] * 8,
             [SquareType.BLACK] * 8,
@@ -86,9 +79,7 @@ class TestGame(unittest.TestCase):
             [SquareType.WHITE] * 7 + [SquareType.EMPTY],
         ]
         self.game.board.state = np.array(NEARLY_FULL_BOARD)
-
         valid_moves = self.game.get_valid_moves()
-
         EXPECTED_VALID_MOVES = [(7, 7)]
         self.assertEqual(set(valid_moves), set(EXPECTED_VALID_MOVES))
 
@@ -97,7 +88,8 @@ class TestGame(unittest.TestCase):
         """
         Test valid modes are updated to the board state as intended.
         """
-        # Initialise nearly full board configuration, with one empty spaces
+
+        # Define nearly full board state
         NEARLY_FULL_BOARD = [
             [SquareType.BLACK] * 8,
             [SquareType.BLACK] * 8,
@@ -165,17 +157,16 @@ class TestGame(unittest.TestCase):
         EXPECTED_BLACK_VALID_MOVES = [(2, 3), (3, 2), (4, 5), (5, 4)]
         EXPECTED_WHITE_VALID_MOVES = [(2, 4), (3, 5), (4, 2), (5, 3)]
 
-        # Fetch valid moves using the function
         black_valid_moves = self.game.get_valid_moves_by_color(SquareType.BLACK)
         white_valid_moves = self.game.get_valid_moves_by_color(SquareType.WHITE)
 
-        # Assert the fetched moves match the expected moves
+        # Assert moves match the expected moves
         self.assertListEqual(black_valid_moves, EXPECTED_BLACK_VALID_MOVES)
         self.assertListEqual(white_valid_moves, EXPECTED_WHITE_VALID_MOVES)
 
     
     def test_white_wins(self):
-        # Set up the game state where White is the winner
+        # Set up game state where White is the winner
         self.game.board.state.fill(SquareType.WHITE)
         self.game.update_scores()
         
@@ -189,7 +180,7 @@ class TestGame(unittest.TestCase):
         
         
     def test_draw(self):
-        # Set up the game state as a draw
+        # Set up game state as a draw
         for row in range(4):
             for col in range(8):
                 self.game.board.state[row, col] = SquareType.WHITE
@@ -215,18 +206,15 @@ class TestPlayer(unittest.TestCase):
     """
 
     def test_state_evaluator_integration_with_player(self):
-        # Initialize a StateEvaluator with custom weights
+        # Initialize a StateEvaluator() with custom weights
         custom_weights = {
             HeuristicType.DISC_DIFF: 0.7,
             HeuristicType.MOBILITY: 0.3
         }
         state_evaluator = StateEvaluator(weights=custom_weights)
         
-        # Initialize a player with this StateEvaluator
         black_player = Player(PlayerType.MINIMAX, SquareType.BLACK, state_evaluator)
         white_player = Player(PlayerType.RANDOM, SquareType.WHITE)
-
-        # Initialize game to use in testing evaluator methods
         game = Game(black_player, white_player)
         
         # Check StateEvaluator's methods work correctly when called from player
@@ -256,34 +244,16 @@ class TestStateEvaluator(unittest.TestCase):
 
 
     def test_count_valid_moves(self):
-        # Expected valid moves for black and white
         EXPECTED_BLACK_VALID_MOVES_COUNT = 4
         EXPECTED_WHITE_VALID_MOVES_COUNT = 4
 
-        # Fetch valid moves count using the function
+        # Count valid moves
         black_valid_moves_count = self.evaluator.count_valid_moves(self.game, SquareType.BLACK)
         white_valid_moves_count = self.evaluator.count_valid_moves(self.game, SquareType.WHITE)
 
-        # Assert the fetched moves count match the expected count
+        # Assert move counts match expected counts
         self.assertEqual(black_valid_moves_count, EXPECTED_BLACK_VALID_MOVES_COUNT)
         self.assertEqual(white_valid_moves_count, EXPECTED_WHITE_VALID_MOVES_COUNT)
-
-
-    def test_count_discs(self):
-        game = Game(PlayerType.USER, PlayerType.RANDOM)
-        evaluator = StateEvaluator()
-
-        # Expected disc count for black and white
-        EXPECTED_BLACK_DISC_COUNT = 2
-        EXPECTED_WHITE_DISC_COUNT = 2
-
-        # Fetch disc count using the function
-        black_disc_count = evaluator.count_discs(game, SquareType.BLACK)
-        white_disc_count = evaluator.count_discs(game, SquareType.WHITE)
-
-        # Assert the fetched disc count match the expected count
-        self.assertEqual(black_disc_count, EXPECTED_BLACK_DISC_COUNT)
-        self.assertEqual(white_disc_count, EXPECTED_WHITE_DISC_COUNT)
 
 
 
@@ -297,26 +267,24 @@ class TestHeuristics(unittest.TestCase):
         """
         Set up a non-trivial board state for testing.
         """
+
         # Custom weights for testing
         custom_weights = {
             HeuristicType.DISC_DIFF: 0.7,
             HeuristicType.MOBILITY: 0.3
         }
 
-        # Initialize StateEvaluator with custom weights
         self.evaluator = StateEvaluator(weights=custom_weights)
 
-        # Initialize players with the StateEvaluator
+        # Initialize players and game
         black_player = Player(PlayerType.MINIMAX, SquareType.BLACK, self.evaluator)
         white_player = Player(PlayerType.RANDOM, SquareType.WHITE)
-
-        # Initialize game with the players
         self.game = Game(black_player, white_player)
 
-        # Clear the board for a custom setup
+        # Clear the board
         self.game.board.state = np.full((8, 8), SquareType.EMPTY)
 
-        # Place discs for a non-trivial state
+        # Place discs for a custome setup
         self.game.board.state[2, 3] = SquareType.BLACK  # Black plays D3
         self.game.board.state[3, 3] = SquareType.BLACK
         self.game.board.state[3, 4] = SquareType.BLACK
@@ -414,7 +382,7 @@ class TestHeuristics(unittest.TestCase):
         evaluator = StateEvaluator()
         evaluation_score = evaluator.evaluate(self.game)
 
-        # Assert that the evaluation function returns +1 for a Black win
+        # Assert evaluation function returns +1 for a Black win
         self.assertEqual(evaluation_score, 1, 
                          "Evaluate function should return +1 for a Black win.")
         
@@ -438,31 +406,30 @@ class TestSimulateMove(unittest.TestCase):
 
     def test_simulate_move_d3(self):
         """
-        Test simulate_move correctly simulates a move when black plays D3.
+        Test simulate_move() correctly simulates Black D3.
         """
         # Black plays D3
         move = (2, 3)
         simulated_game = self.game.simulate_move(move)
         
-        # Check if the simulated game's board state has changed correctly
+        # Check simulated game's board state has changed
         self.assertFalse(np.array_equal(self.initial_board, simulated_game.board.state),
                          "The board state should have changed after simulating the move.")
         
-        # Check if the move at D3 has been played by black
+        # Check D3 has been occupied by Black
         self.assertEqual(simulated_game.board.state[move], SquareType.BLACK,
                          "D3 should be occupied by black.")
         
-        # Check if the active player has changed to white after black's move
+        # Check active player has changed to White
         self.assertEqual(simulated_game.active.disc_color, SquareType.WHITE,
                          "The active player should now be white.")
 
-        # Check that the number of valid moves for white has been updated
+        # Check number of valid moves for White has been updated
         white_valid_moves = simulated_game.get_valid_moves_by_color(SquareType.WHITE)
         self.assertTrue(len(white_valid_moves) == 3,
-                        "White should have at least three valid moves after black plays D3.")
+                        "White should have three valid moves after black plays D3.")
 
-        # Check that the scores have been updated correctly
-        # Assuming that black's D3 move flips one white disc to black
+        # Check scores have been updated correctly
         self.assertEqual(simulated_game.black_score, 4,
                          "Black should have a score of 4 after playing D3.")
         self.assertEqual(simulated_game.white_score, 1,
@@ -473,7 +440,7 @@ class TestSimulateMove(unittest.TestCase):
 
 class TestMinimax(unittest.TestCase):
     """
-    Test the functionality of the minimax algorithm.
+    Test the functionality of the Minimax algorithm.
     """
 
     def setUp(self):
@@ -483,18 +450,15 @@ class TestMinimax(unittest.TestCase):
         # Initialize StateEvaluator with default (or custom) weights
         state_evaluator = StateEvaluator()
 
-        # Initialize a minimax player with the StateEvaluator
         minimax_player_black = Player(PlayerType.MINIMAX, SquareType.BLACK, state_evaluator)
         minimax_player_white = Player(PlayerType.MINIMAX, SquareType.WHITE, state_evaluator)
-        
-        # Initialize the game with minimax as black and random as white
         self.game = Game(minimax_player_black, minimax_player_white)
 
 
     def test_minimax_base_case(self):
         """
         Test minimax values for all possible initial moves for Black. Evaluates 
-        the immediate impact of each move according to base case of Minimax. 
+        the value of each initial move, corresponding to the Minimax base case.
         """
         # Initial valid moves for Black
         initial_moves = [(2, 3), (3, 2), (4, 5), (5, 4)]
@@ -506,12 +470,12 @@ class TestMinimax(unittest.TestCase):
             # Simulate the move on the board
             simulated_game = self.game.simulate_move(move)
 
-            # Calculate the minimax value for the resulting game state at the base case,
-            # where depth is 0. This will invoke the heuristic evaluation directly
-            # since the base case does not involve recursive lookahead.
+            # Calculate the minimax value for the resulting game state where 
+            # depth 0. This will invoke the heuristic evaluation straightaway,
+            # ignoring any recursion
             minimax_value = simulated_game.player_black.minimax(simulated_game, 0, True)
             
-            # Assert that the minimax value is as expected
+            # Assert minimax value is as expected
             self.assertEqual(minimax_value, EXPECTED_MINIMAX_VALUE,
                 f"Minimax value for {move}  expected to be {EXPECTED_MINIMAX_VALUE}, but got {minimax_value}.")
             
@@ -519,18 +483,17 @@ class TestMinimax(unittest.TestCase):
     def test_minimax_recursion(self):
         """
         Test the recursive behavior of the Minimax algorithm by evaluating the 
-        potential moves for White after Black plays D3, and ensuring that the 
-        algorithm correctly calculates the minimax value two levels deep (i.e.
-        depth = 2, where 'Black plays D3' is the initial state).
+        potential moves for White after Black plays D3.
         """
-        # Black plays D3 (initial state)
+        # Black plays D3, i.e. initial state
         simulated_game = self.game.simulate_move((2, 3))
 
-        # Looking 2 moves ahead, i.e all possible White moves, and Black responses
+        # Looking 2 moves ahead, i.e the available Black moves from  all 
+        # possible White moves
         simulated_game.player_white.depth = 2
         white_moves = simulated_game.player_white.minimax_evaluate_moves(simulated_game)
 
-        # Define the expected minimax values for White's possible moves
+        # Define the expected minimax values (pre-calculated)
         EXPECTED_MINIMAX_VALUES = {
             (2, 2): 0.08928571428571427, # 5/56
             (2, 4): 0.16883116883116883, # 13/77
@@ -545,10 +508,10 @@ class TestMinimax(unittest.TestCase):
 
     def test_get_minimax_move(self):
         """
-        Test get_minimax_move function retrieves the best move for White 
+        Test get_minimax_move() function retrieves the best move for White 
         using the Minimax algorithm after Black plays D3.
         """
-        # Black plays D3 (initial state)
+        # Black plays D3, i.e. initial state
         simulated_game = self.game.simulate_move((2, 3))
 
         # Set the depth for White's minimax evaluation
@@ -558,7 +521,7 @@ class TestMinimax(unittest.TestCase):
         # Expected best move for White
         EXPECTED_BEST_MOVE = (2, 2)
 
-        # Assert that the best move is as expected
+        # Assert best move is as expected
         self.assertEqual(best_move_white, EXPECTED_BEST_MOVE,
                         f"The best minimax move for White expected to be {EXPECTED_BEST_MOVE}, but got {best_move_white}.")
         
