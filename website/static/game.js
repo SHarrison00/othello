@@ -1,15 +1,14 @@
 // Flag to indicate whether valid moves are visible
 let validMovesVisible = true;
 
-// Function to update the game board based on the received game state
+// Update the game board
 function updateGameBoard() {
-  // AJAX request to backend for game state
+  // AJAX request to backend for board state
   fetch('/get_game_state')
     .then(response => response.json())
     .then(data => {
       const gameState = data.game_state;
 
-      // Update board to reflect the updated state
       for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
           const cell = gameState[row][col];
@@ -58,10 +57,9 @@ function handleUserMove(event) {
     const row = parseInt(tdElement.dataset.row);
     const col = parseInt(tdElement.dataset.col);
 
-    // Hide any previously displayed message
+    // Hide any message currently displayed
     document.getElementById('message-box').style.visibility = 'hidden';
 
-    // AJAX request to backend for User's move
     fetch('/user_move', {
       method: 'POST',
       headers: {
@@ -75,7 +73,6 @@ function handleUserMove(event) {
         updateGameBoard();
 
         if (data.game_over) {
-          // Fetch/display outcome if game over
           fetchAndDisplayGameOutcome();
         } else {
           // Request Agent's move if game not over
@@ -107,7 +104,6 @@ function handleAgentMove() {
       updateGameBoard();
 
       if (data.game_over) {
-        // Fetch and display the game outcome
         fetchAndDisplayGameOutcome();
       } else {
         if (data.agent_moved) {
@@ -117,7 +113,6 @@ function handleAgentMove() {
             validMovesVisible = true;
             document.getElementById('message-box').style.visibility = 'hidden';
           } else {
-            // If user has no valid moves
             console.log("User has no valid moves, AI's turn again.");
             displayMessage("You have no valid moves. OthelloAI's turn.");
 
@@ -130,14 +125,12 @@ function handleAgentMove() {
             // If user also has no valid moves
             console.log("Neither AI nor user has valid moves. Game over.");
 
-            // Fetch and display the game outcome
             fetchAndDisplayGameOutcome();
           } else {
-            // If user has valid moves
             console.log("Agent had no valid move, user's turn again.");
             displayMessage("OthelloAI has no valid moves. Your turn.");
 
-            // Show valid moves for  user
+            // Show valid moves for user
             validMovesVisible = true;
             updateGameBoard();
           }
@@ -152,16 +145,16 @@ function handleAgentMove() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  // Attach a single event listener to a parent element (e.g., the table)
+  // Attach an event listener to a parent element (e.g., the table)
   const gameTable = document.querySelector('.game-board');
   gameTable.addEventListener('click', function (event) {
-    // Check if the clicked element or any of its parents have the .grey-disc class
+
     if (event.target.closest('.grey-disc')) {
       handleUserMove(event);
     }
   });
 
-  // If the user is playing as "white", the agent should make the first move
+  // If the user is playing as "white", agent makes the first move
   if (userColor === 'WHITE') {
     console.log("User selected WHITE");
     validMovesVisible = false;

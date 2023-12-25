@@ -16,20 +16,18 @@
 }
 
 .overlay-content {
-  /* General styles for overlay content */
   background: white;
   padding: 15px;
   border-radius: 8px;
   width: 30%;
-  font-size: 1rem; /* General font size */
+  font-size: 1rem;
   text-align: center;
 }
 
 .overlay-content label, 
 .overlay-content select, 
 .overlay-content input {
-  /* Specific styles for form elements */
-  font-size: 1rem; /* Specific font size for form elements */
+  font-size: 1rem;
 }
 
 body {
@@ -45,7 +43,7 @@ h1 {
 
 .note {
   font-size: 16px; 
-  margin-top: -30px; /* Adjust the top margin to reduce the gap */
+  margin-top: -30px;
 }
 
 .centered-content {
@@ -123,38 +121,20 @@ h1 {
   font-size: 0.9rem;
 }
 
-/* .quote-container {
-  margin-top: 120px;
-  margin-left: auto; 
-  margin-right: auto;
-  max-width: 600px;
-  padding: 10px;
-  text-align: center;
-  font-style: italic;
-}
-
-.message-box {
-  margin-top: 20px;
-  color: #FF0000; 
-  text-align: center;
-} */
-
 .quote-container {
   position: fixed;
-  bottom: 40px; /* Position from the bottom */
+  bottom: 40px;
   left: 50%;
-  transform: translateX(-50%); /* Center horizontally */
+  transform: translateX(-50%);
   max-width: 600px;
   padding: 10px;
   text-align: center;
   font-style: italic;
-  /* Rest of your styles... */
 }
 
 .message-box {
-  height: 50px; /* Fixed height to reserve space */
-  visibility: hidden; /* Hide it initially but reserve space */
-  /* Rest of your styles... */
+  height: 50px;
+  visibility: hidden;
   text-align: center;
   margin-top: 20px;
   font-size: 1rem;
@@ -165,5 +145,5 @@ h1 {
   text-align: center;
   margin-top: 50px;
   font-size: 0.7em;
-  color: #555; /* Choose a color that fits your website's theme */
+  color: #555;
 }
