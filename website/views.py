@@ -23,7 +23,7 @@ from src.state_evaluation import StateEvaluator, HeuristicType
 views = Blueprint("views", __name__)
 
 
-@views.route("/home")
+@views.route("/")
 def home():
     return render_template("home.html")
 
