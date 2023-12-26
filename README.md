@@ -2,7 +2,11 @@
 
 ## Project Description
 
-OthelloAI WebApp is an online implementation of the classic Othello board game, where users can play against an AI opponent powered by the Minimax algorithm for strategic gameplay. For in-depth explanation into the AI's functioning, refer to the project blog.
+The OthelloAI WebApp is an online implementation of the classic Othello board game, where users can play against an AI opponent driven by the Minimax algorithm for strategic gameplay. For in-depth explanation into the AI's functioning, refer to the project blog.
+
+Website Preview:
+
+![annotated_website](https://github.com/SHarrison00/othello/assets/86479780/8f1b2f0b-4ed1-4bd9-b2b3-75ac78363d47 "Website Preview: Play against OthelloAI.")
 
 ## How It Works
 
