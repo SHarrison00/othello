@@ -18,10 +18,10 @@ OthelloAI uses Python and Flask for its back-end, handling game logic and AI opp
 
 ## Repository Contents
 
-- Briefly discuss some of the repository contents. 
+Here's a quick overview of what you'll find in this repository:
 
-    - For example the `src` folder.
+- **Source Code:** The `src` folder is where you'll find the core code for implementing the Othello game logic and AI decision-making processes.
 
-    - For example running `python -m tests.test`
+- **Testing:** In the `tests` folder, you'll find comprehensive tests to ensure everything works smoothly. To run tests, use the command `python -m tests.test` from the root directory.
 
-    - For example the `src/experiments` folder.
+- **AI Experimentation:** Explore AI functionality in the `src/experiments` folder, including Minimax algorithm move-time analysis and heuristic insights for Othello.
