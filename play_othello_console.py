@@ -1,3 +1,6 @@
+# This script was used for development purposes to test the Othello game logic 
+# in the console. Specifically, the script is designed to be used by an offline 
+# user to play Othello against a random agent.
 
 import time
 from src.game import Game
