@@ -144,14 +144,32 @@ function handleAgentMove() {
   }, 2000);
 }
 
+function resetGame() {
+  fetch('/reset_game', {
+    method: 'POST',
+  })
+    .then(() => {
+      // Reload the page to start a new game
+      location.reload();
+    })
+    .catch(error => {
+      console.error('Error resetting the game:', error);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   // Attach an event listener to a parent element (e.g., the table)
   const gameTable = document.querySelector('.game-board');
   gameTable.addEventListener('click', function (event) {
-
     if (event.target.closest('.grey-disc')) {
       handleUserMove(event);
     }
+  });
+
+  // Add an event listener for the reset game button
+  const resetGameButton = document.getElementById('reset-game-button');
+  resetGameButton.addEventListener('click', function () {
+    resetGame(); // Call your reset game function here
   });
 
   // If the user is playing as "white", agent makes the first move

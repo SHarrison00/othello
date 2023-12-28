@@ -190,3 +190,13 @@ def get_game_outcome():
     
     else:
         return jsonify({"outcome_message": "Game instance not found"})
+    
+
+@views.route('/reset_game', methods=['POST'])
+def reset_game():
+    
+    session.pop('user_color', None)
+    session.pop('game_instance', None)
+    session.pop('game_started', None)
+
+    return jsonify({'message': 'Game reset'})
