@@ -14,7 +14,8 @@ OthelloAI uses Python and Flask for its back-end, handling game logic and AI opp
 
 ## Blog
 
-- Blog description and link.
+- Blog draft (Est. Publication 10th-16th January): https://drive.google.com/file/d/1QgDnU_i_S2Ol6QHW8EFy6WdfeHxrh9U8/view?usp=sharing
+- Play OthelloAI: https://othelloai.onrender.com 
 
 ## Repository Contents
 
