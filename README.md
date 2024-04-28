@@ -12,10 +12,10 @@ Website Preview:
 
 OthelloAI uses Python and Flask for its back-end, handling game logic and AI opponent operations. On the front-end, it employs AJAX requests to facilitate communication with the server, allowing players to make moves and play against OthelloAI.
 
-## Blog
+## Links
 
-- Blog draft (Est. Publication 10th-16th January): https://drive.google.com/file/d/1L07tpo5GZzaJfDXE2kcL1qpEf3plMeQ8/view?usp=sharing
-- Play OthelloAI: https://othelloai.onrender.com 
+- [Read the blog.](https://drive.google.com/file/d/1HXUY4hVqSeLwTT3QzbWTIvazhXH26HTF/view?usp=sharing)
+- [Play OthelloAI.](https://othelloai.onrender.com)
 
 ## Repository Contents
 
